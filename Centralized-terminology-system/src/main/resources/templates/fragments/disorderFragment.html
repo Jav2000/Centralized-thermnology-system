@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<body>
+		<div class="entity" th:fragment="disorder" th:if="${disorder != null}">
+			<div class="entity-properties">
+				<h1 th:text="${disorder.name}"/>
+				<h2>Details</h2>
+				<div class="entity-details">
+					<div class="titulo-valor">
+						<p class="titulo">OrphaCode   </p>
+						<p class="valor" th:text="${disorder.orphaCode}"/>
+					</div>
+					<div class="titulo-valor">
+						<p class="titulo">Group   </p>
+						<p class="valor" th:text="${disorder.group}"/>
+					</div>
+					<div class="titulo-valor">
+						<p class="titulo">Type   </p>
+						<p class="valor" th:text="${disorder.type}"/>
+					</div>
+					<div class="titulo-valor" th:if="${disorder.OMIM != null and disorder.OMIM != 0}">
+						<p class="titulo">OMIM   </p>
+						<p class="valor" th:text="${disorder.OMIM}"/>
+					</div>
+				</div>
+				<div th:if="${disorder.description}">
+					<h3>Description</h3>
+					<p th:text="${disorder.description}"/>
+				</div>
+				<div class="entity-synonyms" th:if="${disorder.synonyms != null and !disorder.synonyms.isEmpty()}">
+					<h3>Synonyms</h3>
+					<div class="synonyms-list">
+						<ul th:each="synonym : ${disorder.synonyms}">
+							<li th:text="${synonym}"/>
+						</ul>
+					</div>
+				</div>
+				<div class="entity-epidemiology" th:if="${disorder.averageAgeOfOnset != null and disorder.averageAgeOfOnset != '' or disorder.averageAgeOfDeath != null and disorder.averageAgeOfDeath != '' or disorder.inheritanceTypes != null and disorder.inheritanceTypes != ''}">
+					<h3>Epidemiological data</h3>
+					<div class="datos-epidemiologicos">
+						<div class="titulo-valor" th:if="${disorder.averageAgeOfOnset != null and disorder.averageAgeOfOnset != ''}">
+							<p class="titulo-epi">Average age of onset   </p>
+							<p class="valor" th:text="${disorder.averageAgeOfOnset}"/>
+						</div>
+						<div class="titulo-valor" th:if="${disorder.averageAgeOfDeath != null and disorder.averageAgeOfDeath != ''}">
+							<p class="titulo-epi">Average age of death   </p>
+							<p class="valor" th:text="${disorder.averageAgeOfDeath}"/>
+						</div>
+						<div class="titulo-valor" th:if="${disorder.inheritanceTypes != null and disorder.inheritanceTypes != ''}">
+							<p class="titulo-epi">Types of inheritance   </p>
+							<p class="valor" th:text="${disorder.inheritanceTypes}"/>
+						</div>
+					</div>
+				</div>
+				<div>
+					<h3>External links</h3>
+					<div class="entity-external-links">
+						<div class="external-link">
+							<a th:href="@{https://pubmed.ncbi.nlm.nih.gov/?term={name}(name = ${disorder.name})}"><img src="/images/Pubmed.png" style="width: 50px; position: relative; top: 12px;"/></a>
+						</div>
+						<div class="external-link" th:if="${disorder.OMIM != null and disorder.OMIM != 0}">
+							<a th:href="@{https://www.omim.org/entry/{OMIM}(OMIM = ${disorder.OMIM})}"><img src="/images/OMIM.jpeg" style="width: 50px"/></a>
+						</div>
+					</div>
+				</div>
+				<div class="entity-genes" th:if="${disorder.genes != null and !disorder.genes.isEmpty()}">
+					<h3>Genes</h3>
+					<div class="genes-list">
+						<ul th:each="geneRel : ${disorder.genes}">
+							<li>
+								<div class="entity-gene">
+									<p th:text="${geneRel.gene.symbol} + ': ' + ${geneRel.gene.name}">
+									<div th:id="${geneRel.gene.symbol}"><a style=""><img src="/images/treeGraph.png" style="width: 30px; position: relative; bottom: 10px;"/></a></div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="entity-phenotypes" th:if="${disorder.phenotypes != null and !disorder.phenotypes.isEmpty()}">
+					<h3>Phenotypes</h3>
+					<div class="phenotypes-list">
+						<ul th:each="phenotypeRel : ${disorder.phenotypes}">
+							<li>
+								<div class="entity-phenotype">
+									<p th:text="${phenotypeRel.phenotype.HPOId} + ' -> ' + ${phenotypeRel.phenotype.term} + ' (' + ${phenotypeRel.frequency}" + ')'>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="entity-hierarchy">
+				<div style="display: flex;">
+					<h2>Hierarchy</h2>
+					<div id="showHierarchyGraph" class="show-graph" th:if="${disorderHierarchy != undefined}">
+						<a style=""><img src="/images/treeGraph.png" style="width: 50px; position: relative; top: 12px;"/></a>
+					</div>
+				</div>
+				<div class="preferential-classification" th:if="${preferentialClassification != null}">
+					<h3>Preferential classification</h3>
+					<p th:text="${preferentialClassification.name}"/>
+				</div>
+				<div class="preferential-classification" th:if="${preferentialClassification == null}">
+					<h3>Preferential classification</h3>
+					<p th:text="${disorder.name}"/>
+				</div>
+				<div class="ascendants" th:if="${parentRel != null and !parentRel.ascendants.isEmpty()}">
+					<h3>Ascendants</h3>
+					<div class="ascendants-recursive">
+						<ul th:fragment="ascendantFragment(parentRel)" th:unless="${parentRel.ascendants != null and parentRel.ascendants.isEmpty()}">
+							<li th:each="asc : ${parentRel.ascendants}" th:inline="text">
+								<a th:href="@{/search/name(input=${asc.son.name})}">[[${asc.son.orphaCode}]]: [[${asc.son.name}]] ([[${asc.son.type}]])</a>
+								<button th:onclick="'desplegar(' + ${asc.son.orphaCode} + ')'" class="arrow down" th:if="${asc.son.ascendants != null and !asc.son.ascendants.isEmpty()}"></button>
+								<div th:id="${parentRel.orphaCode}" th:insert="~{this::ascendantFragment(${asc.son})}" style="display: none;"></div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="descendants" th:if="${parentRel != null and !parentRel.descendants.isEmpty()}">
+					<h3>Descendants</h3>
+					<div class="descendants-recursive">
+						<ul th:fragment="descendantFragment(parentRel)" th:unless="${parentRel.descendants != null and parentRel.descendants.isEmpty()}">
+							<li th:each="desc : ${parentRel.descendants}" th:inline="text">
+								<a th:href="@{/search/name(input=${desc.son.name})}">[[${desc.son.orphaCode}]]: [[${desc.son.name}]] ([[${desc.son.type}]])</a>
+								<button th:onclick="'desplegar(' + ${desc.son.orphaCode} + ')'" class="arrow down" th:if="${desc.son.descendants != null and !desc.son.descendants.isEmpty()}"></button>
+								<div th:id="${parentRel.orphaCode}" th:insert="~{this::descendantFragment(${desc.son})}" style="display: none;"></div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="full-graph" id="hierarchyGraph">
+				<div id="graphBackground" class="graph-backgroud" style>
+					<div id="closeHierarchyGraph" class="close-graph">
+						X
+					</div>
+					<div class="result-panel" th:replace="~{fragments/forceSimulationFragments.html :: forceHierarchySimulation}"></div>	
+				</div>
+			</div>
+			<div class="full-graph" id="genesGraph">
+				<div id="genesGraphBackground" class="graph-backgroud" style>
+					<div id="closeGenesGraph" class="close-graph">
+						X
+					</div>
+					<div class="result-panel" th:replace="~{fragments/forceSimulationFragments.html :: forceGenesSimulation}"></div>	
+			</div>
+		</div>
+	</body>
+</html>

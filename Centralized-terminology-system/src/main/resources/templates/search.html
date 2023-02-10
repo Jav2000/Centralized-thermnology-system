@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="ISO-8859-1">
+		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+		<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+		<link th:href="@{/css/styles.css}" rel="stylesheet"/>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+		<script src="https://d3js.org/d3.v6.min.js"></script>
+		<title th:if="${entity == null}">Search</title>
+		<title th:if="${entity != null}">[[${entity.name}]]</title>
+	</head>
+	<body>
+		<div class="w3-top">
+			<div class="w3-bar w3-theme w3-top w3-left-align w3-large">
+				<a href="/home" class="w3-bar-item w3-button w3-hide-small w3-hover-white"><img src="/images/Data12.jpeg" style="width: 24px;"/></a>
+		    	<a href="/search" class="w3-bar-item w3-button w3-theme-l1">Search</a>
+		  	</div>
+		</div>	
+		<div class="search-panel">
+			<form th:action="@{/search/name}" autocomplete="off">
+				<div>
+					<input id="myInput" class="buscador" type="text" placeholder="..." th:name="input"/>
+					<input type="submit"/>
+				</div>
+			</form>
+		</div>
+		<div class="result-panel" th:replace="~{fragments/disorderFragment.html :: disorder}"></div>		
+	</body>
+	<script th:inline="javascript" type="text/javascript">
+		/* Nombres para sugerencias buscador */
+  		var names = [[${entityNames}]];
+  		
+  		/* Datos para el grafo */
+		var disorderHierarchyData = JSON.parse([[${disorderHierarchy}]]);
+		var disorderGenesHierarchyData = JSON.parse([[${disorderGenesHierarchy}]]);
+		var disorderPhenotypesHierarchyData = JSON.parse([[${disorderPhenotypesHierarchy}]]);
+	
+		for(let i = 0; i < disorderGenesHierarchyData.length; i++){
+			let id = "#" + disorderGenesHierarchyData[i].symbol;
+			$(id).click(function(){
+				$.ajax({
+					type: "GET",
+					url: "/geneDisorders",
+					data: {"symbol": id.substring(1)},
+					success: function(result){
+						createGeneDisordersGraph(JSON.parse(result));
+						
+					}
+				});
+			})
+		}
+	</script>
+	<script th:inline="javascript" type="text/javascript" th:src="@{/js/search.js}"></script>
+	<script th:inline="javascript" type="text/javascript" th:src="@{/js/forceHierarchySimulation.js}"></script>
+	<script th:inline="javascript" type="text/javascript" th:src="@{/js/forceGenesSimulation.js}"></script>
+</html>

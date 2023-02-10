@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="ISO-8859-1">
+		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+		<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+		<link th:href="@{/css/styles.css}" rel="stylesheet"/>
+		<script src="https://d3js.org/d3.v6.min.js"></script>
+		<title>Home</title>
+	</head>
+	<body>
+		<div class="w3-top" style="position: relative;">
+			<div class="w3-bar w3-theme w3-top w3-left-align w3-large" style="position: relative;">
+				<a href="/home" class="w3-bar-item w3-button w3-theme-l1"><img src="/images/Data12.jpeg" style="width: 24px;"/></a>
+		    	<a href="/search" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Search</a>
+		  	</div>
+		</div>
+		<div class="home-search-panel">
+			<form th:action="@{/search/name}" autocomplete="off">
+				<div class="home-search-panel-inputs">
+					<input id="myInput" class="buscador" type="text" placeholder="..." th:name="input"/>
+					<input type="submit" class="submit"/>
+				</div>
+			</form>
+		</div>
+	</body>
+		<script th:inline="javascript" type="text/javascript">
+		/* Nombres para sugerencias buscador */
+  		var names = [[${entityNames}]];
+	</script>
+	<script th:inline="javascript" type="text/javascript" th:src="@{/js/searchHome.js}"></script>
+</html>
