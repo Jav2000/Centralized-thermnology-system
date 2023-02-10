@@ -65,22 +65,24 @@ Sistema centralizado de terminologías clínicas (Orphanet primer versión)
   * DisorderPhenotypeRelation / PhenotypeDisorderRelation:
     * Relaciones entre enfermedades y fenotipos. En ambas direcciones para poder realizar diferentes tipos de búsquedas.
     * Campos:
-      * frequency
-      * criteria
-      * phenotype / disorder
+    	* frequency
+      	* criteria
+      	* phenotype / disorder
 3. Repositorios
   * RootRepository:
-    * Neo4jRepository<Root, Long>
+  	* Neo4jRepository<Root, Long>
     ```
-      @Query("MATCH (r:Root) RETURN r")
-	    public Root findRoot();
+    	@Query("MATCH (r:Root) RETURN r")
+	public Root findRoot();
 	
-	    @Query("MATCH path = (r:Root)-[:PARENT_RELATION*1..1]->(d:Disorder) RETURN r, collect(relationships(path)), collect(d)")
-	    public Root findRootClassifications();
+	@Query("MATCH path = (r:Root)-[:PARENT_RELATION*1..1]->(d:Disorder) RETURN r, collect(relationships(path)), collect(d)")
+	public Root findRootClassifications();
 	
-	    @Query("MATCH path = (r:Root)-[:PARENT_RELATION*1..2]->(d:Disorder) RETURN r, collect(relationships(path)), collect(d)")
-	    public Root findRootDescendants();
+	@Query("MATCH path = (r:Root)-[:PARENT_RELATION*1..2]->(d:Disorder) RETURN r, collect(relationships(path)), collect(d)")
+	public Root findRootDescendants();
     ```
+  * DisorderRepository:
+  	
     * UserRepository:
         * JPA Repository
         * `<User findByUsername(String username);>`
