@@ -24,6 +24,36 @@ Sistema centralizado de terminologías clínicas
     * Dependencia para librerias JSON
 
 # Documentacion
+## Requisitos del sistema
+La web consistirá en un motor de búsqueda que permita buscar información sobre una entidad (grupo, enfermedad o subtipo).
+* Sugerencias con los nombres y sinónimos de las entidades en la barra de búsqueda.
+* Información sobre la entidad:
+	* Nombre
+	* OrphaCode
+	* Grupo
+	* Tipo
+	* OMIM
+	* Descripción
+	* Sinónimos
+	* Datos epidemiológicos
+	* Pubmed
+	* Clasificación preferente
+* Información sobre las entidades padre e hijo:
+* Información sobre los genes asociados:
+	* Nombre
+	* Símbolo
+	* Locus
+	* Tipo
+* Información sobre las relaciones entre entidad y genes:
+	* Estatus
+	* Tipo
+* Información sobre los fenotipos asociados:
+	* HPOId
+	* Término
+* Información sobre las relaciones entre entidad y fenotipos:
+	* Frecuencia
+	* Criterio
+* Listado descendente con la jerarquía
 1. Nodos
   * Root:
     * Nodo raiz del grafo, sirve para obetener la clasifición de cada enfermedad.
@@ -80,9 +110,6 @@ Sistema centralizado de terminologías clínicas
 	
 	@Query("MATCH path = (r:Root)-[:PARENT_RELATION*1..1]->(d:Disorder) RETURN r, collect(relationships(path)), collect(d)")
 	public Root findRootClassifications();
-	
-	@Query("MATCH path = (r:Root)-[:PARENT_RELATION*1..2]->(d:Disorder) RETURN r, collect(relationships(path)), collect(d)")
-	public Root findRootDescendants();
     	```
   * DisorderRepository:
   	* Neo4jRepository<Root, Long>
@@ -123,65 +150,21 @@ Sistema centralizado de terminologías clínicas
 	public Disorder findDisorderPhenotypes(Integer orphaCode);
 	
   * GeneRepository:
+  	* Neo4jRepository<Gene, Long>
   ```
+  	@Query("MATCH (g:Gene {symbol: $symbol}) RETURN g")
+	public Gene findGeneBySymbol(String symbol);
+	
+	@Query("MATCH path = (g:Gene)<-[:ASSOCIATED_WITH_GENE]-(d:Disorder {orphaCode: $orphaCode}) RETURN g, collect(relationships(path)), collect(d)")
+	public List<Gene> findGenesAssociatedToDisorder(Integer orphaCode);
+	
+	@Query("MATCH path = (g:Gene {symbol: $symbol})<-[:ASSOCIATED_WITH_GENE]-(d:Disorder) "
+			+ "RETURN g, collect(relationships(path)), collect(d)")
+	public Gene findDisordersAssociatedToGene(String symbol);
   ```
-3. Servicios
-    * UserService y UserServiceImpl:
-        * `public void save(User user);`
-            * Método para crear un nuevo usuario. Encripta la contraseña recibida en texto plano
-        * `public void saveWithoutEncripting(User user);`
-            * Método para guardar un usuario sin encriptar su contraseña (UPDATE)
-        * `public User findByUsername(String username);`
-        * `public User findByEmail(String email);`
-        * `public List<User> findAll();`
-    * TaxiService y TaxiServiceImpl:
-        * `public List<Taxi> findAll();`
-    * EmailSenderService y EmailSenderServiceImpl:
-        * `public EmailSenderServiceImpl(JavaMailSender javaMailSender);`
-            * Método para inicializar en JavaMailSender
-        * `public void sendEmail(SimpleMailMessage email);`
-            * Método para enviar un SimpleMailMessage
-    * TripService y TripServiceImpl:
-        * `public List<Trip> findAll();`
-4. Controladores
-    * IndexController:
-        * `public String indexAfterLogin(HttpServletRequest request);`
-            * Redirecciona al usuario ya identificado según su rol.
-    * LoginController:
-        * `public String login(Model model);`
-            * Devuelve la página login.html
-        * `public String adminIndex(Model model);`
-            * Devuelve la página de inicio de los Admin
-        * `public String usersIndex(Model model);`
-            * Devuelve la página de inicio de los User
-    * RegistrationController:
-        * `public ModelAndView displayRegistration(ModelAndView modelAndView, User user);` (GET)
-            * Añade un objeto con formato User para el registro
-            * Devuelve la vista para registrar un nuevo User
-        * `public ModelAndView registration(ModelAndView modelAndView, User user);` (POST)
-            * Registra un nuevo usuario
-            * Si el email ya estaba registrado muestra vista error
-            * Si no, pone el campo active en false, crea el usuario, genera un token nuevo asociado al user creado y envía un email con el link del token de verificación
-        * `public ModelAndView confirmUserAccount(ModelAndView modelAndView, @RequestParam("token")String token);`
-            * Comprueba si el token está en la base de datos y activa el usuario asociado
-            * Elimina el token recibido de la base de datos
-    * UsuariosController:
-        * `public String usuarios(Model model);`
-            * Devuelve la página de Gestión de usuarios
-    * TaxisController:
-        * `public String taxis(Model model);`
-            * Devuelve la página de Gestión de taxis
-    * ViajesController:
-        * `public String viajes(Model model);`
-            * Devuelve la página de Gestión de viajes
-    * AdministracionController:
-        * `public String administracion(Model model);`
-            * Devuelve la página principal de Administración
-        * `public String administracionAdminRegister(Model model);`
-            * Devuelve la página de registro de nuevos administradores
-        * `public String administracionTaxiRegister(Model model);`
-            * Devuelve la página de registro de nuevos taxis
-        * `public ModelAndView adminRegistration(ModelAndView modelAndView, User user);`
-            * Guarda el nuevo admin
-        * `public ModelAndView taxiRegistration(ModelAndView modelAndView, Taxi taxi);`
-            * Guarda el nuevo taxi
+  * PhenotypeRepository:
+  	* Neo4jRepository<Phenotype, Long>
+  	```
+	@Query("MATCH (p:Phenotype {HPOId: $HPOId}) RETURN p")
+	public Phenotype findPhenotypeByHPOId(String HPOId);
+  	```
