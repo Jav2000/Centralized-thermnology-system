@@ -74,7 +74,7 @@ Sistema centralizado de terminologías clínicas
 3. Repositorios
   * RootRepository:
 	* Neo4jRepository<Root, Long>
-    	*```
+    	```
     	@Query("MATCH (r:Root) RETURN r")
 	public Root findRoot();
 	
@@ -86,7 +86,7 @@ Sistema centralizado de terminologías clínicas
     	```
   * DisorderRepository:
   	* Neo4jRepository<Root, Long>
-	* ```
+	```
 	@Query("MATCH (d:Disorder) RETURN d")
 	public List<Disorder> findAllDisorders();
 	
@@ -122,17 +122,9 @@ Sistema centralizado de terminologías clínicas
 			+ "RETURN d, collect(relationships(path)), collect(phenotype)")
 	public Disorder findDisorderPhenotypes(Integer orphaCode);
 	
-    * UserRepository:
-        * JPA Repository
-        * `<User findByUsername(String username);>`
-    * SecureTokenRepository:
-        * JPA Repository
-        * `<public SecureToken findByToken(final String token);>`
-        * `<public Long removeByToken(String token);>`
-    * TaxiRepository:
-        * JPA Repository
-    * TripRepository:
-        * JPA Repository
+  * GeneRepository:
+  ```
+  ```
 3. Servicios
     * UserService y UserServiceImpl:
         * `public void save(User user);`
