@@ -1,24 +1,27 @@
-# Centralized-thermnology-system
-Sistema centralizado de terminologías clínicas (Orphanet primer versión)
+# Sistema centralizado de terminologías clínicas
+Sistema centralizado de terminologías clínicas
 
 # Autores
 * Javier Rodríguez Sánchez
 
 # Entorno
+* Java 17
 * Spring Boot MVN
 * Neo4j
 
 # Spring Dependencies
+* Spring boot starter web
+	* Dependencia para construir aplicaciones web, incluyendo RESTful, utilizando Spring MVC. Utiliza Tomcat como contenedor incrustado por defecto.
 * Thymeleaf
-    * Motor de plantillas Java para aplicaciones web (Controllers)
+	* Motor de plantillas Java para aplicaciones web
 * DevTools
     * Auto Refresh
 * Spring Starter Web
     * Para crear aplicaciones web
 * Spring data Neo4j
-    * Base de datos
+    * Base de datos no relacional Neo4j
 * Spring gson
-    * Formato JSON para los grafos
+    * Dependencia para librerias JSON
 
 # Documentacion
 1. Nodos
@@ -70,8 +73,8 @@ Sistema centralizado de terminologías clínicas (Orphanet primer versión)
       	* phenotype / disorder
 3. Repositorios
   * RootRepository:
-  	* Neo4jRepository<Root, Long>
-    ```
+	* Neo4jRepository<Root, Long>
+    	*```
     	@Query("MATCH (r:Root) RETURN r")
 	public Root findRoot();
 	
@@ -80,9 +83,45 @@ Sistema centralizado de terminologías clínicas (Orphanet primer versión)
 	
 	@Query("MATCH path = (r:Root)-[:PARENT_RELATION*1..2]->(d:Disorder) RETURN r, collect(relationships(path)), collect(d)")
 	public Root findRootDescendants();
-    ```
+    	```
   * DisorderRepository:
-  	
+  	* Neo4jRepository<Root, Long>
+	* ```
+	@Query("MATCH (d:Disorder) RETURN d")
+	public List<Disorder> findAllDisorders();
+	
+	@Query("MATCH path = (p)<-[:ASSOCIATED_WITH_PHENOTYPE*0..1]-(d:Disorder {orphaCode: $orphaCode})-[:ASSOCIATED_WITH_GENE*0..1]->(g) "
+			+ "RETURN d, collect(relationships(path)), collect(g), collect(p)")
+	public Disorder findDisorderGenesAndPhenotypesByOrphaCode(Integer orphaCode);
+	
+	@Query("MATCH path = (p)<-[:ASSOCIATED_WITH_PHENOTYPE*0..1]-(d:Disorder)-[:ASSOCIATED_WITH_GENE*0..1]->(g) "
+			+ "WHERE d.name = $nameOrSynonym OR $nameOrSynonym in d.synonyms RETURN d, collect(relationships(path)), collect(g), collect(p)")
+	public Disorder findDisorderGenesAndPhenotypesByNameOrSynonym(String nameOrSynonym);
+	
+	@Query("MATCH path = (:Disorder {orphaCode: $orphaCode})<-[:PARENT_RELATION*]-(d:Disorder)<-[:PARENT_RELATION]-(:Root) "
+			+ "RETURN d ORDER BY length(path) ASC LIMIT 1")
+	public Disorder findDisorderPreferentialClassification(Integer orphaCode);
+	
+	@Query("MATCH path = (ascen:Disorder)-[:PARENT_RELATION*0..]->(d:Disorder {orphaCode: $orphaCode})-[:PARENT_RELATION*0..]->(descen:Disorder) "
+			+ "RETURN d, collect(relationships(path)), collect(ascen), collect(descen)")
+	public Disorder findDisorderParentRelations(Integer orphaCode);
+	
+	@Query("MATCH path = (d {orphaCode: $orphaCode})-[:PARENT_RELATION*]->(sons:Disorder) "
+			+ "RETURN d, collect(relationships(path)), collect(sons)")
+	public Disorder findDisorderDescendants(Integer orphaCode);
+	
+	@Query("MATCH path = (d:Disorder {orphaCode: $orphaCode})<-[:PARENT_RELATION*]-(parent:Disorder) "
+			+ "RETURN d, collect(relationships(path)), collect(parent)")
+	public Disorder findDisorderAscendants(Integer orphaCode);
+	
+	@Query("MATCH path = (d:Disorder {orphaCode: $orphaCode})-[:ASSOCIATED_WITH_GENE]->(gene:Gene) "
+			+ "RETURN d, collect(relationships(path)), collect(gene)")
+	public Disorder findDisorderGenes(Integer orphaCode);
+	
+	@Query("MATCH path = (d:Disorder {orphaCode: $orphaCode})-[:ASSOCIATED_WITH_PHENOTYPE]->(phenotype:Phenotype) "
+			+ "RETURN d, collect(relationships(path)), collect(phenotype)")
+	public Disorder findDisorderPhenotypes(Integer orphaCode);
+	
     * UserRepository:
         * JPA Repository
         * `<User findByUsername(String username);>`
