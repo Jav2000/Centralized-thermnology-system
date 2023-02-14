@@ -4,7 +4,7 @@ import org.springframework.data.neo4j.core.schema.RelationshipId;
 import org.springframework.data.neo4j.core.schema.RelationshipProperties;
 import org.springframework.data.neo4j.core.schema.TargetNode;
 
-import com.orphanet.neo4j.data.nodes.Disorder;
+import com.orphanet.neo4j.data.nodes.Neo4jDisorder;
 
 @RelationshipProperties
 public class PhenotypeDisorderRelation {
@@ -17,9 +17,9 @@ public class PhenotypeDisorderRelation {
 	private String criteria;
 	
 	@TargetNode
-	private Disorder disorder;
+	private Neo4jDisorder disorder;
 	
-	public PhenotypeDisorderRelation(String frequency, String criteria, Disorder disorder) {
+	public PhenotypeDisorderRelation(String frequency, String criteria, Neo4jDisorder disorder) {
 		this.setFrequency(frequency);
 		this.setCriteria(criteria);
 		this.disorder = disorder;
@@ -41,11 +41,11 @@ public class PhenotypeDisorderRelation {
 		this.criteria = criteria;
 	}
 	
-	public Disorder getDisorder() {
+	public Neo4jDisorder getDisorder() {
 		return disorder;
 	}
 	
-	public void setDisorder(Disorder disorder) {
+	public void setDisorder(Neo4jDisorder disorder) {
 		this.disorder = disorder;
 	}
 }

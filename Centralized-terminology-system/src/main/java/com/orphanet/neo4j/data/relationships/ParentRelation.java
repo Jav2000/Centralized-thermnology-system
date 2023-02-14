@@ -4,7 +4,7 @@ import org.springframework.data.neo4j.core.schema.RelationshipId;
 import org.springframework.data.neo4j.core.schema.RelationshipProperties;
 import org.springframework.data.neo4j.core.schema.TargetNode;
 
-import com.orphanet.neo4j.data.nodes.Disorder;
+import com.orphanet.neo4j.data.nodes.Neo4jDisorder;
 
 @RelationshipProperties
 public class ParentRelation {
@@ -15,9 +15,9 @@ public class ParentRelation {
 	private String type;
 	
 	@TargetNode
-	private Disorder son;
+	private Neo4jDisorder son;
 	
-	public ParentRelation(Disorder son, String type) {
+	public ParentRelation(Neo4jDisorder son, String type) {
 		this.son = son;
 		this.setType(type);
 	}
@@ -30,11 +30,11 @@ public class ParentRelation {
 		this.type = type;
 	}
 	
-	public Disorder getSon() {
+	public Neo4jDisorder getSon() {
 		return son;
 	}
 	
-	public void setSon(Disorder son) {
+	public void setSon(Neo4jDisorder son) {
 		this.son = son;
 	}
 }

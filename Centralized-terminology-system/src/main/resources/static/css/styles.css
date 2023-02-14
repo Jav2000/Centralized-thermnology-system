@@ -62,7 +62,7 @@ html:first-letter{
 	max-height: 330px;
 }
 
-.ascendants-recursive, .descendants-recursive{
+.ascendants-list, .descendants-list{
 	max-height: 305px;
    	overflow-y: auto;
     border: 1px solid;

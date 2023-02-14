@@ -6,44 +6,29 @@ import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
 
-import com.orphanet.neo4j.data.nodes.Disorder;
+import com.orphanet.neo4j.data.nodes.Neo4jDisorder;
 
 @Repository
-public interface DisorderRepository extends Neo4jRepository<Disorder, Long>{
+public interface DisorderRepository extends Neo4jRepository<Neo4jDisorder, Long>{
 	
 	@Query("MATCH (d:Disorder) RETURN d")
-	public List<Disorder> findAllDisorders();
+	public List<Neo4jDisorder> findAllDisorders();
 	
 	@Query("MATCH path = (p)<-[:ASSOCIATED_WITH_PHENOTYPE*0..1]-(d:Disorder {orphaCode: $orphaCode})-[:ASSOCIATED_WITH_GENE*0..1]->(g) "
 			+ "RETURN d, collect(relationships(path)), collect(g), collect(p)")
-	public Disorder findDisorderGenesAndPhenotypesByOrphaCode(Integer orphaCode);
+	public Neo4jDisorder findDisorderGenesAndPhenotypesByOrphaCode(Integer orphaCode);
 	
 	@Query("MATCH path = (p)<-[:ASSOCIATED_WITH_PHENOTYPE*0..1]-(d:Disorder)-[:ASSOCIATED_WITH_GENE*0..1]->(g) "
 			+ "WHERE d.name = $nameOrSynonym OR $nameOrSynonym in d.synonyms RETURN d, collect(relationships(path)), collect(g), collect(p)")
-	public Disorder findDisorderGenesAndPhenotypesByNameOrSynonym(String nameOrSynonym);
+	public Neo4jDisorder findDisorderGenesAndPhenotypesByNameOrSynonym(String nameOrSynonym);
 	
+	/* Consulta para obtener la clasificación preferente de una entidad mediante el orphaCode de una entidad */
 	@Query("MATCH path = (:Disorder {orphaCode: $orphaCode})<-[:PARENT_RELATION*]-(d:Disorder)<-[:PARENT_RELATION]-(:Root) "
 			+ "RETURN d ORDER BY length(path) ASC LIMIT 1")
-	public Disorder findDisorderPreferentialClassification(Integer orphaCode);
-	
-	@Query("MATCH path = (ascen:Disorder)-[:PARENT_RELATION*0..]->(d:Disorder {orphaCode: $orphaCode})-[:PARENT_RELATION*0..]->(descen:Disorder) "
+	public Neo4jDisorder findDisorderPreferentialClassification(Integer orphaCode);
+
+	@Query("MATCH path = (ascen:Disorder)-[:PARENT_RELATION*0..1]->(d:Disorder {orphaCode: $orphaCode})-[:PARENT_RELATION*0..1]->(descen:Disorder) "
 			+ "RETURN d, collect(relationships(path)), collect(ascen), collect(descen)")
-	public Disorder findDisorderParentRelations(Integer orphaCode);
-	
-	@Query("MATCH path = (d {orphaCode: $orphaCode})-[:PARENT_RELATION*]->(sons:Disorder) "
-			+ "RETURN d, collect(relationships(path)), collect(sons)")
-	public Disorder findDisorderDescendants(Integer orphaCode);
-	
-	@Query("MATCH path = (d:Disorder {orphaCode: $orphaCode})<-[:PARENT_RELATION*]-(parent:Disorder) "
-			+ "RETURN d, collect(relationships(path)), collect(parent)")
-	public Disorder findDisorderAscendants(Integer orphaCode);
-	
-	@Query("MATCH path = (d:Disorder {orphaCode: $orphaCode})-[:ASSOCIATED_WITH_GENE]->(gene:Gene) "
-			+ "RETURN d, collect(relationships(path)), collect(gene)")
-	public Disorder findDisorderGenes(Integer orphaCode);
-	
-	@Query("MATCH path = (d:Disorder {orphaCode: $orphaCode})-[:ASSOCIATED_WITH_PHENOTYPE]->(phenotype:Phenotype) "
-			+ "RETURN d, collect(relationships(path)), collect(phenotype)")
-	public Disorder findDisorderPhenotypes(Integer orphaCode);
+	public Neo4jDisorder findDisorderAscendantsAndDescendants(Integer orphaCode);
 	
 }

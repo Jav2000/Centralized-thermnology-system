@@ -4,7 +4,7 @@ import org.springframework.data.neo4j.core.schema.RelationshipId;
 import org.springframework.data.neo4j.core.schema.RelationshipProperties;
 import org.springframework.data.neo4j.core.schema.TargetNode;
 
-import com.orphanet.neo4j.data.nodes.Gene;
+import com.orphanet.neo4j.data.nodes.Neo4jGene;
 
 @RelationshipProperties
 public class DisorderGeneRelation {
@@ -17,9 +17,9 @@ public class DisorderGeneRelation {
 	private String status;
 	
 	@TargetNode
-	private Gene gene;
+	private Neo4jGene gene;
 	
-	public DisorderGeneRelation(String type, String status, Gene gene) {
+	public DisorderGeneRelation(String type, String status, Neo4jGene gene) {
 		this.type = type;
 		this.status = status;
 		this.gene = gene;
@@ -41,11 +41,11 @@ public class DisorderGeneRelation {
 		this.status = status;
 	}
 	
-	public Gene getGene() {
+	public Neo4jGene getGene() {
 		return gene;
 	}
 	
-	public void setGene(Gene gene) {
+	public void setGene(Neo4jGene gene) {
 		this.gene = gene;
 	}
 	

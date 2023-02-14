@@ -11,7 +11,7 @@ import org.springframework.data.neo4j.core.schema.GeneratedValue.UUIDGenerator;
 import com.orphanet.neo4j.data.relationships.ParentRelation;
 
 @Node
-public class Root {
+public class Neo4jRoot {
 	
 	@Id
 	@GeneratedValue(generatorClass = UUIDGenerator.class)
@@ -22,7 +22,7 @@ public class Root {
 	@Relationship(type = "PARENT_RELATION")
 	private List<ParentRelation> descendants;
 	
-	public Root(Integer orphaCode) {
+	public Neo4jRoot(Integer orphaCode) {
 		this.setOrphaCode(orphaCode);
 	}
 

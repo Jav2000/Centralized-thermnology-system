@@ -14,7 +14,7 @@ import com.orphanet.neo4j.data.relationships.ParentRelation;
 import com.orphanet.neo4j.data.relationships.DisorderPhenotypeRelation;
 
 @Node
-public class Disorder {
+public class Neo4jDisorder {
 	
 	@Id
 	@GeneratedValue(generatorClass = UUIDGenerator.class)
@@ -52,7 +52,7 @@ public class Disorder {
 	@Relationship(type = "ASSOCIATED_WITH_PHENOTYPE")
 	private List<DisorderPhenotypeRelation> phenotypes;
 	
-	public Disorder(Integer orphaCode, String name, String group, String type, String description,
+	public Neo4jDisorder(Integer orphaCode, String name, String group, String type, String description,
 					List<String> synonyms, Integer OMIM, String averageAgeOfOnset, String averageAgeOfDeath,
 					String inheritanceTypes) {
 		this.orphaCode = orphaCode;
@@ -146,7 +146,7 @@ public class Disorder {
 	public void setInheritanceTypes(String inheritanceTypes) {
 		this.inheritanceTypes = inheritanceTypes;
 	}
-	
+
 	public List<ParentRelation> getAscendants(){
 		return ascendants;
 	}

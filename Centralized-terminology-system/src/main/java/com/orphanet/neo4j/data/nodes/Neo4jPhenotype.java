@@ -12,7 +12,7 @@ import org.springframework.data.neo4j.core.schema.Relationship.Direction;
 import com.orphanet.neo4j.data.relationships.PhenotypeDisorderRelation;
 
 @Node
-public class Phenotype {
+public class Neo4jPhenotype {
 
 	@Id
 	@GeneratedValue(generatorClass = UUIDGenerator.class)
@@ -25,7 +25,7 @@ public class Phenotype {
 	@Relationship(type = "ASSOCIATED_WITH_PHENOTYPE", direction = Direction.INCOMING)
 	private List<PhenotypeDisorderRelation> disorders;
 	
-	public Phenotype(String HPOId, String term) {
+	public Neo4jPhenotype(String HPOId, String term) {
 		this.setHPOId(HPOId);
 		this.setTerm(term);
 	}
