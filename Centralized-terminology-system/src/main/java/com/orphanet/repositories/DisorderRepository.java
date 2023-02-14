@@ -22,28 +22,13 @@ public interface DisorderRepository extends Neo4jRepository<Disorder, Long>{
 			+ "WHERE d.name = $nameOrSynonym OR $nameOrSynonym in d.synonyms RETURN d, collect(relationships(path)), collect(g), collect(p)")
 	public Disorder findDisorderGenesAndPhenotypesByNameOrSynonym(String nameOrSynonym);
 	
+	/* Consulta para obtener la clasificación preferente de una entidad mediante el orphaCode de una entidad */
 	@Query("MATCH path = (:Disorder {orphaCode: $orphaCode})<-[:PARENT_RELATION*]-(d:Disorder)<-[:PARENT_RELATION]-(:Root) "
 			+ "RETURN d ORDER BY length(path) ASC LIMIT 1")
 	public Disorder findDisorderPreferentialClassification(Integer orphaCode);
-	
-	@Query("MATCH path = (ascen:Disorder)-[:PARENT_RELATION*0..]->(d:Disorder {orphaCode: $orphaCode})-[:PARENT_RELATION*0..]->(descen:Disorder) "
+
+	@Query("MATCH path = (ascen:Disorder)-[:PARENT_RELATION*0..1]->(d:Disorder {orphaCode: $orphaCode})-[:PARENT_RELATION*0..1]->(descen:Disorder) "
 			+ "RETURN d, collect(relationships(path)), collect(ascen), collect(descen)")
-	public Disorder findDisorderParentRelations(Integer orphaCode);
-	
-	@Query("MATCH path = (d {orphaCode: $orphaCode})-[:PARENT_RELATION*]->(sons:Disorder) "
-			+ "RETURN d, collect(relationships(path)), collect(sons)")
-	public Disorder findDisorderDescendants(Integer orphaCode);
-	
-	@Query("MATCH path = (d:Disorder {orphaCode: $orphaCode})<-[:PARENT_RELATION*]-(parent:Disorder) "
-			+ "RETURN d, collect(relationships(path)), collect(parent)")
-	public Disorder findDisorderAscendants(Integer orphaCode);
-	
-	@Query("MATCH path = (d:Disorder {orphaCode: $orphaCode})-[:ASSOCIATED_WITH_GENE]->(gene:Gene) "
-			+ "RETURN d, collect(relationships(path)), collect(gene)")
-	public Disorder findDisorderGenes(Integer orphaCode);
-	
-	@Query("MATCH path = (d:Disorder {orphaCode: $orphaCode})-[:ASSOCIATED_WITH_PHENOTYPE]->(phenotype:Phenotype) "
-			+ "RETURN d, collect(relationships(path)), collect(phenotype)")
-	public Disorder findDisorderPhenotypes(Integer orphaCode);
+	public Disorder findDisorderAscendantsAndDescendants(Integer orphaCode);
 	
 }

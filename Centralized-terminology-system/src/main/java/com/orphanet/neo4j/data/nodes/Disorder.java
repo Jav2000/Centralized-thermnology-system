@@ -146,7 +146,7 @@ public class Disorder {
 	public void setInheritanceTypes(String inheritanceTypes) {
 		this.inheritanceTypes = inheritanceTypes;
 	}
-	
+
 	public List<ParentRelation> getAscendants(){
 		return ascendants;
 	}

@@ -66,11 +66,11 @@
 				<div class="entity-genes" th:if="${disorder.genes != null and !disorder.genes.isEmpty()}">
 					<h3>Genes</h3>
 					<div class="genes-list">
-						<ul th:each="geneRel : ${disorder.genes}">
+						<ul th:each="gene : ${disorder.genes}">
 							<li>
 								<div class="entity-gene">
-									<p th:text="${geneRel.gene.symbol} + ': ' + ${geneRel.gene.name}">
-									<div th:id="${geneRel.gene.symbol}"><a style=""><img src="/images/treeGraph.png" style="width: 30px; position: relative; bottom: 10px;"/></a></div>
+									<p th:text="${gene.symbol} + ': ' + ${gene.name}">
+									<div th:id="${gene.symbol}"><a style=""><img src="/images/treeGraph.png" style="width: 30px; position: relative; bottom: 10px;"/></a></div>
 								</div>
 							</li>
 						</ul>
@@ -79,10 +79,10 @@
 				<div class="entity-phenotypes" th:if="${disorder.phenotypes != null and !disorder.phenotypes.isEmpty()}">
 					<h3>Phenotypes</h3>
 					<div class="phenotypes-list">
-						<ul th:each="phenotypeRel : ${disorder.phenotypes}">
+						<ul th:each="phenotype : ${disorder.phenotypes}">
 							<li>
 								<div class="entity-phenotype">
-									<p th:text="${phenotypeRel.phenotype.HPOId} + ' -> ' + ${phenotypeRel.phenotype.term} + ' (' + ${phenotypeRel.frequency}" + ')'>
+									<p th:text="${phenotype.HPOId} + ' -> ' + ${phenotype.term} + ' (' + ${phenotype.disorderRelationFrequency} + ')'">
 								</div>
 							</li>
 						</ul>
@@ -96,34 +96,30 @@
 						<a style=""><img src="/images/treeGraph.png" style="width: 50px; position: relative; top: 12px;"/></a>
 					</div>
 				</div>
-				<div class="preferential-classification" th:if="${preferentialClassification != null}">
+				<div class="preferential-classification" th:if="${disorder.preferentialClassification != null}">
 					<h3>Preferential classification</h3>
-					<p th:text="${preferentialClassification.name}"/>
+					<p th:text="${disorder.preferentialClassification}"/>
 				</div>
-				<div class="preferential-classification" th:if="${preferentialClassification == null}">
+				<div class="preferential-classification" th:if="${disorder.preferentialClassification == null}">
 					<h3>Preferential classification</h3>
 					<p th:text="${disorder.name}"/>
 				</div>
-				<div class="ascendants" th:if="${parentRel != null and !parentRel.ascendants.isEmpty()}">
+				<div class="ascendants" th:if="${disorder.ascendants != null and !disorder.ascendants.isEmpty()}">
 					<h3>Ascendants</h3>
-					<div class="ascendants-recursive">
-						<ul th:fragment="ascendantFragment(parentRel)" th:unless="${parentRel.ascendants != null and parentRel.ascendants.isEmpty()}">
-							<li th:each="asc : ${parentRel.ascendants}" th:inline="text">
-								<a th:href="@{/search/name(input=${asc.son.name})}">[[${asc.son.orphaCode}]]: [[${asc.son.name}]] ([[${asc.son.type}]])</a>
-								<button th:onclick="'desplegar(' + ${asc.son.orphaCode} + ')'" class="arrow down" th:if="${asc.son.ascendants != null and !asc.son.ascendants.isEmpty()}"></button>
-								<div th:id="${parentRel.orphaCode}" th:insert="~{this::ascendantFragment(${asc.son})}" style="display: none;"></div>
+					<div class="ascendants-list">
+						<ul>
+							<li th:each="asc : ${disorder.ascendants}" th:inline="text">
+								<a th:href="@{/search/name(input=${asc.name})}">[[${asc.orphaCode}]]: [[${asc.name}]] ([[${asc.type}]])    [[${asc.parentRelationType}]]</a>
 							</li>
 						</ul>
 					</div>
 				</div>
-				<div class="descendants" th:if="${parentRel != null and !parentRel.descendants.isEmpty()}">
+				<div class="descendants" th:if="${disorder.descendants != null and !disorder.descendants.isEmpty()}">
 					<h3>Descendants</h3>
-					<div class="descendants-recursive">
-						<ul th:fragment="descendantFragment(parentRel)" th:unless="${parentRel.descendants != null and parentRel.descendants.isEmpty()}">
-							<li th:each="desc : ${parentRel.descendants}" th:inline="text">
-								<a th:href="@{/search/name(input=${desc.son.name})}">[[${desc.son.orphaCode}]]: [[${desc.son.name}]] ([[${desc.son.type}]])</a>
-								<button th:onclick="'desplegar(' + ${desc.son.orphaCode} + ')'" class="arrow down" th:if="${desc.son.descendants != null and !desc.son.descendants.isEmpty()}"></button>
-								<div th:id="${parentRel.orphaCode}" th:insert="~{this::descendantFragment(${desc.son})}" style="display: none;"></div>
+					<div class="descendants-list">
+						<ul>
+							<li th:each="desc : ${disorder.descendants}" th:inline="text">
+								<a th:href="@{/search/name(input=${desc.name})}">[[${desc.orphaCode}]]: [[${desc.name}]] ([[${desc.type}]])</a>
 							</li>
 						</ul>
 					</div>

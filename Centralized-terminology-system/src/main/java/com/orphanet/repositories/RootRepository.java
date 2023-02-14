@@ -14,7 +14,4 @@ public interface RootRepository extends Neo4jRepository<Root, Long>{
 	
 	@Query("MATCH path = (r:Root)-[:PARENT_RELATION*1..1]->(d:Disorder) RETURN r, collect(relationships(path)), collect(d)")
 	public Root findRootClassifications();
-	
-	@Query("MATCH path = (r:Root)-[:PARENT_RELATION*1..2]->(d:Disorder) RETURN r, collect(relationships(path)), collect(d)")
-	public Root findRootDescendants();
 }
