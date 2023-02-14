@@ -12,7 +12,7 @@ import org.springframework.data.neo4j.core.schema.Relationship.Direction;
 import com.orphanet.neo4j.data.relationships.GeneDisorderRelation;
 
 @Node
-public class Neo4jGene {
+public class Gene {
 	
 	@Id
 	@GeneratedValue(generatorClass = UUIDGenerator.class)
@@ -31,7 +31,7 @@ public class Neo4jGene {
 	@Relationship(type = "ASSOCIATED_WITH_GENE", direction = Direction.INCOMING)
 	private List<GeneDisorderRelation> disorders;
 	
-	public Neo4jGene(String symbol, String name, String type, String locus, Integer OMIM) {
+	public Gene(String symbol, String name, String type, String locus, Integer OMIM) {
 		this.symbol = symbol;
 		this.name = name;
 		this.type = type;

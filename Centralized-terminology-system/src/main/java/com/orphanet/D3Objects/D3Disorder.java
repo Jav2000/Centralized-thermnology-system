@@ -12,7 +12,17 @@ public class D3Disorder {
 	
 	private String type;
 	
+	private List<String> synonyms;
+	
+	private Integer OMIM;
+	
 	private String description;
+	
+	private String averageAgeOfOnset;
+	
+	private String averageAgeOfDeath;
+	
+	private String inheritanceTypes;
 	
 	private String preferentialClassification;
 	
@@ -26,12 +36,19 @@ public class D3Disorder {
 	
 	private List<D3Phenotype> phenotypes;
 	
-	public D3Disorder(Integer orphaCode, String name, String group, String type, String description, String parentRelationType) {
+	public D3Disorder(	Integer orphaCode, String name, String group, String type, String description,
+						List<String> synonyms, Integer OMIM, String averageAgeOfOnset, String averageAgeOfDeath,
+						String inheritanceTypes, String parentRelationType) {
 		this.setOrphaCode(orphaCode);
 		this.setName(name);
 		this.setGroup(group);
 		this.setType(type);
 		this.setDescription(description);
+		this.setSynonyms(synonyms);
+		this.setOMIM(OMIM);
+		this.setAverageAgeOfOnset(averageAgeOfOnset);
+		this.setAverageAgeOfDeath(averageAgeOfDeath);
+		this.setInheritanceTypes(inheritanceTypes);
 		this.setParentRelationType(parentRelationType);
 	}
 
@@ -67,6 +84,22 @@ public class D3Disorder {
 		this.type = type;
 	}
 
+	public List<String> getSynonyms() {
+		return synonyms;
+	}
+
+	public void setSynonyms(List<String> synonyms) {
+		this.synonyms = synonyms;
+	}
+
+	public Integer getOMIM() {
+		return OMIM;
+	}
+
+	public void setOMIM(Integer oMIM) {
+		OMIM = oMIM;
+	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -75,12 +108,36 @@ public class D3Disorder {
 		this.description = description;
 	}
 
+	public String getAverageAgeOfOnset() {
+		return averageAgeOfOnset;
+	}
+
+	public void setAverageAgeOfOnset(String averageAgeOfOnset) {
+		this.averageAgeOfOnset = averageAgeOfOnset;
+	}
+
+	public String getAverageAgeOfDeath() {
+		return averageAgeOfDeath;
+	}
+
+	public void setAverageAgeOfDeath(String averageAgeOfDeath) {
+		this.averageAgeOfDeath = averageAgeOfDeath;
+	}
+
 	public String getPreferentialClassification() {
 		return preferentialClassification;
 	}
 
 	public void setPreferentialClassification(String preferentialClassification) {
 		this.preferentialClassification = preferentialClassification;
+	}
+
+	public String getInheritanceTypes() {
+		return inheritanceTypes;
+	}
+
+	public void setInheritanceTypes(String inheritanceTypes) {
+		this.inheritanceTypes = inheritanceTypes;
 	}
 
 	public List<D3Disorder> getAscendants() {

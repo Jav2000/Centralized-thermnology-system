@@ -66,11 +66,11 @@
 				<div class="entity-genes" th:if="${disorder.genes != null and !disorder.genes.isEmpty()}">
 					<h3>Genes</h3>
 					<div class="genes-list">
-						<ul th:each="geneRel : ${disorder.genes}">
+						<ul th:each="gene : ${disorder.genes}">
 							<li>
 								<div class="entity-gene">
-									<p th:text="${geneRel.gene.symbol} + ': ' + ${geneRel.gene.name}">
-									<div th:id="${geneRel.gene.symbol}"><a style=""><img src="/images/treeGraph.png" style="width: 30px; position: relative; bottom: 10px;"/></a></div>
+									<p th:text="${gene.symbol} + ': ' + ${gene.name}">
+									<div th:id="${gene.symbol}"><a style=""><img src="/images/treeGraph.png" style="width: 30px; position: relative; bottom: 10px;"/></a></div>
 								</div>
 							</li>
 						</ul>
@@ -79,10 +79,10 @@
 				<div class="entity-phenotypes" th:if="${disorder.phenotypes != null and !disorder.phenotypes.isEmpty()}">
 					<h3>Phenotypes</h3>
 					<div class="phenotypes-list">
-						<ul th:each="phenotypeRel : ${disorder.phenotypes}">
+						<ul th:each="phenotype : ${disorder.phenotypes}">
 							<li>
 								<div class="entity-phenotype">
-									<p th:text="${phenotypeRel.phenotype.HPOId} + ' -> ' + ${phenotypeRel.phenotype.term} + ' (' + ${phenotypeRel.frequency}" + '))'>
+									<p th:text="${phenotype.HPOId} + ' -> ' + ${phenotype.term} + ' (' + ${phenotype.disorderRelationFrequency} + ')'">
 								</div>
 							</li>
 						</ul>
@@ -109,7 +109,7 @@
 					<div class="ascendants-list">
 						<ul>
 							<li th:each="asc : ${disorder.ascendants}" th:inline="text">
-								<a th:href="@{/search/name(input=${asc.son.name})}">[[${asc.son.orphaCode}]]: [[${asc.son.name}]] ([[${asc.son.type}]])</a>
+								<a th:href="@{/search/name(input=${asc.name})}">[[${asc.orphaCode}]]: [[${asc.name}]] ([[${asc.type}]])    [[${asc.parentRelationType}]]</a>
 							</li>
 						</ul>
 					</div>
@@ -119,7 +119,7 @@
 					<div class="descendants-list">
 						<ul>
 							<li th:each="desc : ${disorder.descendants}" th:inline="text">
-								<a th:href="@{/search/name(input=${desc.son.name})}">[[${desc.son.orphaCode}]]: [[${desc.son.name}]] ([[${desc.son.type}]])</a>
+								<a th:href="@{/search/name(input=${desc.name})}">[[${desc.orphaCode}]]: [[${desc.name}]] ([[${desc.type}]])</a>
 							</li>
 						</ul>
 					</div>

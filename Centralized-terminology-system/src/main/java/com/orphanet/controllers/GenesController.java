@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
-import com.orphanet.neo4j.data.nodes.Neo4jGene;
+import com.orphanet.neo4j.data.nodes.Gene;
 import com.orphanet.neo4j.data.relationships.GeneDisorderRelation;
 import com.orphanet.objects.DisorderWithGeneRelation;
 import com.orphanet.objects.GeneHierarchy;
@@ -27,7 +27,7 @@ public class GenesController {
 		return gson.toJson(convertToGeneHierarchy(geneService.findDisordersAssociatedToGene(symbol)));
 	}
 
-	private GeneHierarchy convertToGeneHierarchy(Neo4jGene gene) {
+	private GeneHierarchy convertToGeneHierarchy(Gene gene) {
 		List<GeneDisorderRelation> disordersRelations = gene.getDisorders();
 		GeneHierarchy result = new GeneHierarchy(gene.getSymbol(), gene.getName(), gene.getType(), gene.getLocus()); 
 		List<DisorderWithGeneRelation> geneHiearchyDisorders =  result.getDisorders();
