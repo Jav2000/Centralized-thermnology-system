@@ -22,7 +22,6 @@ public interface DisorderRepository extends Neo4jRepository<Disorder, Long>{
 			+ "WHERE d.name = $nameOrSynonym OR $nameOrSynonym in d.synonyms RETURN d, collect(relationships(path)), collect(g), collect(p)")
 	public Disorder findDisorderGenesAndPhenotypesByNameOrSynonym(String nameOrSynonym);
 	
-	/* Consulta para obtener la clasificación preferente de una entidad mediante el orphaCode de una entidad */
 	@Query("MATCH path = (:Disorder {orphaCode: $orphaCode})<-[:PARENT_RELATION*]-(d:Disorder)<-[:PARENT_RELATION]-(:Root) "
 			+ "RETURN d ORDER BY length(path) ASC LIMIT 1")
 	public Disorder findDisorderPreferentialClassification(Integer orphaCode);

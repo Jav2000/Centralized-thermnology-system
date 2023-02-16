@@ -31,11 +31,12 @@
 		/* Nombres para sugerencias buscador */
   		var names = [[${entityNames}]];
   		
-  		/* Datos para el grafo */
-		var disorderHierarchyData = JSON.parse([[${disorderHierarchy}]]);
-		var disorderGenesHierarchyData = JSON.parse([[${disorderGenesHierarchy}]]);
-		var disorderPhenotypesHierarchyData = JSON.parse([[${disorderPhenotypesHierarchy}]]);
-	
+  		var disorder = [[${disorder}]];
+  		console.log(disorder);
+  		
+  		var disorderGraph = [[${disorderGraph}]];
+  		
+		/*
 		for(let i = 0; i < disorderGenesHierarchyData.length; i++){
 			let id = "#" + disorderGenesHierarchyData[i].symbol;
 			$(id).click(function(){
@@ -50,8 +51,9 @@
 				});
 			})
 		}
+		*/
 	</script>
 	<script th:inline="javascript" type="text/javascript" th:src="@{/js/search.js}"></script>
-	<script th:inline="javascript" type="text/javascript" th:src="@{/js/forceHierarchySimulation.js}"></script>
-	<script th:inline="javascript" type="text/javascript" th:src="@{/js/forceGenesSimulation.js}"></script>
+	<script th:inline="javascript" type="text/javascript" th:src="@{/js/D3Graph.js}"></script>
+	<script th:inline="javascript" type="text/javascript" th:src="@{/js/DisorderGraph.js}"></script>
 </html>
