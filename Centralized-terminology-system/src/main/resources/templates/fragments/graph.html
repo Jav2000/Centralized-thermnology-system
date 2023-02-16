@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<body>
+		<div id="graph" class="graph" th:fragment="graph">
+			<svg id="hierarchySimulationSVG" class="graph-visualization"></svg>
+			<div id="hierarchySimulationDisorderDiv" class="details-div">
+				<div id="disorderName" class="details-title"></div>
+				<div class="titulo">OrphaCode</div>
+				<div id="disorderOrphaCode" class="details-value"></div>
+				<div class="titulo">Type</div>
+				<div id="disorderType" class="details-value"></div>
+				<div class="titulo">Group</div>
+				<div id="disorderGroup" class="details-value"></div>
+			</div>
+			<div id="hierarchySimulationGeneDiv" class="details-div">
+				<div id="geneName" class="details-title"></div>
+				<div class="titulo">Symbol</div>
+				<div id="geneSymbol" class="details-value"></div>
+				<div class="titulo">Type</div>
+				<div id="geneType" class="details-value"></div>
+				<div class="titulo">Locus</div>
+				<div id="geneLocus" class="details-value"></div>
+			</div>
+			<div id="hierarchySimulationPhenotypeDiv" class="details-div">
+				<div id="phenotypeTerm" class="details-title"></div>
+				<div class="titulo">HPOId</div>
+				<div id="phenotypeHPOId" class="details-value"></div>
+				<div id="phenotypeCriteriaDiv">
+					<div class="titulo">Criteria</div>
+					<div id="phenotypeCriteria" class="details-value"></div>
+				</div>
+				<div id="phenotypeFrequencyDiv">
+					<div class="titulo">Frequency</div>
+					<div id="phenotypeFrequency" class="details-value"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

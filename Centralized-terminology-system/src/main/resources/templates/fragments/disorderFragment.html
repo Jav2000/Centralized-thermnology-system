@@ -66,11 +66,11 @@
 				<div class="entity-genes" th:if="${disorder.genes != null and !disorder.genes.isEmpty()}">
 					<h3>Genes</h3>
 					<div class="genes-list">
-						<ul th:each="gene : ${disorder.genes}">
+						<ul th:each="geneRel : ${disorder.genes}">
 							<li>
 								<div class="entity-gene">
-									<p th:text="${gene.symbol} + ': ' + ${gene.name}">
-									<div th:id="${gene.symbol}"><a style=""><img src="/images/treeGraph.png" style="width: 30px; position: relative; bottom: 10px;"/></a></div>
+									<p th:text="${geneRel.gene.symbol} + ': ' + ${geneRel.gene.name}">
+									<div th:id="${geneRel.gene.symbol}"><a style=""><img src="/images/treeGraph.png" style="width: 30px; position: relative; bottom: 10px;"/></a></div>
 								</div>
 							</li>
 						</ul>
@@ -79,10 +79,10 @@
 				<div class="entity-phenotypes" th:if="${disorder.phenotypes != null and !disorder.phenotypes.isEmpty()}">
 					<h3>Phenotypes</h3>
 					<div class="phenotypes-list">
-						<ul th:each="phenotype : ${disorder.phenotypes}">
+						<ul th:each="phenotypeRel : ${disorder.phenotypes}">
 							<li>
 								<div class="entity-phenotype">
-									<p th:text="${phenotype.HPOId} + ' -> ' + ${phenotype.term} + ' (' + ${phenotype.disorderRelationFrequency} + ')'">
+									<p th:text="${phenotypeRel.phenotype.HPOId} + ' -> ' + ${phenotypeRel.phenotype.term} + ' (' + ${phenotypeRel.frequency} + ')'">
 								</div>
 							</li>
 						</ul>
@@ -92,7 +92,7 @@
 			<div class="entity-hierarchy">
 				<div style="display: flex;">
 					<h2>Hierarchy</h2>
-					<div id="showHierarchyGraph" class="show-graph" th:if="${disorderHierarchy != undefined}">
+					<div id="showHierarchyGraph" class="show-graph">
 						<a style=""><img src="/images/treeGraph.png" style="width: 50px; position: relative; top: 12px;"/></a>
 					</div>
 				</div>
@@ -108,8 +108,8 @@
 					<h3>Ascendants</h3>
 					<div class="ascendants-list">
 						<ul>
-							<li th:each="asc : ${disorder.ascendants}" th:inline="text">
-								<a th:href="@{/search/name(input=${asc.name})}">[[${asc.orphaCode}]]: [[${asc.name}]] ([[${asc.type}]])    [[${asc.parentRelationType}]]</a>
+							<li th:each="ascRel : ${disorder.ascendants}" th:inline="text">
+								<a th:href="@{/search/name(input=${ascRel.son.name})}">[[${ascRel.son.orphaCode}]]: [[${ascRel.son.name}]] ([[${ascRel.son.type}]])    [[${ascRel.type}]]</a>
 							</li>
 						</ul>
 					</div>
@@ -118,8 +118,8 @@
 					<h3>Descendants</h3>
 					<div class="descendants-list">
 						<ul>
-							<li th:each="desc : ${disorder.descendants}" th:inline="text">
-								<a th:href="@{/search/name(input=${desc.name})}">[[${desc.orphaCode}]]: [[${desc.name}]] ([[${desc.type}]])</a>
+							<li th:each="descRel : ${disorder.descendants}" th:inline="text">
+								<a th:href="@{/search/name(input=${descRel.son.name})}">[[${descRel.son.orphaCode}]]: [[${descRel.son.name}]] ([[${descRel.type}]])</a>
 							</li>
 						</ul>
 					</div>
@@ -130,15 +130,8 @@
 					<div id="closeHierarchyGraph" class="close-graph">
 						X
 					</div>
-					<div class="result-panel" th:replace="~{fragments/forceSimulationFragments.html :: forceHierarchySimulation}"></div>	
+					<div class="result-panel" th:replace="~{fragments/graph.html :: graph}"></div>	
 				</div>
-			</div>
-			<div class="full-graph" id="genesGraph">
-				<div id="genesGraphBackground" class="graph-backgroud" style>
-					<div id="closeGenesGraph" class="close-graph">
-						X
-					</div>
-					<div class="result-panel" th:replace="~{fragments/forceSimulationFragments.html :: forceGenesSimulation}"></div>	
 			</div>
 		</div>
 	</body>

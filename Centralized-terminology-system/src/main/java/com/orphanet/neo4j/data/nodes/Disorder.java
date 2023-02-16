@@ -9,6 +9,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 import org.springframework.data.neo4j.core.schema.Relationship.Direction;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.orphanet.neo4j.data.relationships.DisorderGeneRelation;
 import com.orphanet.neo4j.data.relationships.ParentRelation;
 import com.orphanet.neo4j.data.relationships.DisorderPhenotypeRelation;
@@ -40,15 +41,21 @@ public class Disorder {
 	
 	private String inheritanceTypes;
 	
+	private String preferentialClassification;
+	
+	@JsonBackReference
 	@Relationship(type = "PARENT_RELATION", direction = Direction.INCOMING)
 	private List<ParentRelation> ascendants;
 	
+	@JsonBackReference
 	@Relationship(type = "PARENT_RELATION")
 	private List<ParentRelation> descendants;
 	
+	@JsonBackReference
 	@Relationship(type = "ASSOCIATED_WITH_GENE")
 	private List<DisorderGeneRelation> genes;
 	
+	@JsonBackReference
 	@Relationship(type = "ASSOCIATED_WITH_PHENOTYPE")
 	private List<DisorderPhenotypeRelation> phenotypes;
 	
@@ -145,6 +152,14 @@ public class Disorder {
 
 	public void setInheritanceTypes(String inheritanceTypes) {
 		this.inheritanceTypes = inheritanceTypes;
+	}
+
+	public String getPreferentialClassification() {
+		return preferentialClassification;
+	}
+
+	public void setPreferentialClassification(String preferentialClassification) {
+		this.preferentialClassification = preferentialClassification;
 	}
 
 	public List<ParentRelation> getAscendants(){
