@@ -1,3 +1,60 @@
+var disorderGraphOn = false;
+var disorderGraph = null;
+  		
+document.getElementById("showDisorderGraph").onclick = function(){
+	if(disorderGraph === null){
+		$.ajax({
+			type: "GET",
+		  	url: "/disorderGraph",
+		  	data: {"orphaCode": disorder.orphaCode},
+		  	success: function(result){
+		  		disorderGraph = result;
+		  		createGraph(disorderGraph);
+				document.getElementById("fullGraph").style.display = "block";
+				disorderGraphOn = true;
+		  	}
+		  });
+  	}else{
+  		createGraph(disorderGraph);
+		document.getElementById("fullGraph").style.display = "block";
+		disorderGraphOn = true;
+  	}
+};
+		
+var genesGraphOn = false;
+var genesGraph = null;
+		
+for(var i = 0; i < genes.length; i++){
+	document.getElementById(genes[i].gene.symbol).onclick = function(){
+		if(genesGraph === null){
+			$.ajax({
+				type: "GET",
+				url: "/geneGraph",
+				data: {"symbol": genes[i - 1].gene.symbol},
+				success: function(result){
+					genesGraph = result;
+					createGraph(genesGraph);
+					document.getElementById("fullGraph").style.display = "block";
+					genesGraphOn = true;
+				}
+			});
+		}else{
+			createGraph(genesGraph);
+			document.getElementById("fullGraph").style.display = "block";
+			genesGraphOn = true;
+		}
+	}
+}
+		
+document.getElementById("closeGraph").onclick = function(){
+	d3.select("#graphSVG").selectAll("*").remove();
+	document.getElementById("fullGraph").style.display = "none";
+	disorderGraphOn = false;
+	var genesGraphOn = false;
+}
+
+autocomplete(document.getElementById("myInput"), names);
+
 /* Funcion para autocompletar sugerencias buscador */	
 function autocomplete(inp, arr) {
   	var currentFocus;
@@ -63,16 +120,4 @@ function autocomplete(inp, arr) {
   	document.addEventListener("click", function (e) {
       	closeAllLists(e.target);
   	});
-}
-
-autocomplete(document.getElementById("myInput"), names);
-
-/* Función desplegar descendentes / ascendentes */
-function desplegar(orphaCode){
-	var div = document.getElementById(orphaCode);
-	if(div.style.display == ''){
-		div.style.display = 'none';
-	}else{
-		div.style.display = '';
-	}
 }

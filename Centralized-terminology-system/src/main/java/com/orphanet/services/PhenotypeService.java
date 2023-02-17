@@ -15,5 +15,9 @@ public class PhenotypeService {
 	public Phenotype findPhenotypeByHPOId(String HPOId) {
 		return phenotypeRepository.findPhenotypeByHPOId(HPOId);
 	}
+	
+	public Phenotype findDisordersAssociatedToPhenotype(String HPOId) {
+		return phenotypeRepository.findDisordersAssociatedToPhenotype(HPOId);
+	}
 
 }

@@ -7,6 +7,7 @@
 		<link th:href="@{/css/styles.css}" rel="stylesheet"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 		<script src="https://d3js.org/d3.v6.min.js"></script>
+		<link rel="icon" type="image/png" href="/images/Data12.jpeg">
 		<title th:if="${entity == null}">Search</title>
 		<title th:if="${entity != null}">[[${entity.name}]]</title>
 	</head>
@@ -28,32 +29,10 @@
 		<div class="result-panel" th:replace="~{fragments/disorderFragment.html :: disorder}"></div>		
 	</body>
 	<script th:inline="javascript" type="text/javascript">
-		/* Nombres para sugerencias buscador */
   		var names = [[${entityNames}]];
-  		
   		var disorder = [[${disorder}]];
-  		console.log(disorder);
-  		
-  		var disorderGraph = [[${disorderGraph}]];
-  		
-		/*
-		for(let i = 0; i < disorderGenesHierarchyData.length; i++){
-			let id = "#" + disorderGenesHierarchyData[i].symbol;
-			$(id).click(function(){
-				$.ajax({
-					type: "GET",
-					url: "/geneDisorders",
-					data: {"symbol": id.substring(1)},
-					success: function(result){
-						createGeneDisordersGraph(JSON.parse(result));
-						
-					}
-				});
-			})
-		}
-		*/
+  		var genes = [[${disorder.genes}]];
 	</script>
 	<script th:inline="javascript" type="text/javascript" th:src="@{/js/search.js}"></script>
 	<script th:inline="javascript" type="text/javascript" th:src="@{/js/D3Graph.js}"></script>
-	<script th:inline="javascript" type="text/javascript" th:src="@{/js/DisorderGraph.js}"></script>
 </html>
