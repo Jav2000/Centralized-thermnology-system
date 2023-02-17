@@ -12,11 +12,11 @@ html:first-letter{
 	width: 50%;
 }
 
-.entity-gene {
+.entity-gene,  .entity-phenotype{
 	display: flex;
 }
 
-.entity-gene div {
+.entity-gene div, .entity-phenotype div{
 	position: relative;
 	top: 15px;
 	left: 10px;

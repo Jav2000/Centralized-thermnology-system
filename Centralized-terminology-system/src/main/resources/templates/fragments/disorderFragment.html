@@ -83,6 +83,7 @@
 							<li>
 								<div class="entity-phenotype">
 									<p th:text="${phenotypeRel.phenotype.HPOId} + ' -> ' + ${phenotypeRel.phenotype.term} + ' (' + ${phenotypeRel.frequency} + ')'">
+									<div th:id="${phenotypeRel.phenotype.HPOId}"><a style=""><img src="/images/treeGraph.png" style="width: 30px; position: relative; bottom: 10px;"/></a></div>
 								</div>
 							</li>
 						</ul>

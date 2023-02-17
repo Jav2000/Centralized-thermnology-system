@@ -8,16 +8,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.orphanet.services.DisorderService;
+import com.orphanet.services.PhenotypeService;
 
 @Controller
-public class DisorderController {
+public class PhenotypeController {
 
 	@Autowired
-	private DisorderService disorderService;
+	private PhenotypeService phenotypeService;
 	
-	@GetMapping("/disorderGraph")
-	public @ResponseBody Map<String, List<Map<String, Object>>> getDisorderGraph(Integer orphaCode){
-		return disorderService.findDisorderGraph(orphaCode);
+	@GetMapping("/phenotypeGraph")
+	public @ResponseBody Map<String, List<Map<String, Object>>> getPhenotypeGraph(String HPOId){
+		return phenotypeService.findPhenotypeGraph(HPOId);
 	}
 }
