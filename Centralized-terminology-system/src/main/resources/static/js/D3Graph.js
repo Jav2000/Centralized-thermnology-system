@@ -3,7 +3,7 @@ function createGraph(graph){
 	var width = 600;
 	var margin = {top: -5, right: -5, bottom: -5, left: -5}
 	
-	var svg = d3.select("#hierarchySimulationSVG")
+	var svg = d3.select("#graphSVG")
 				.attr('width', width)
 			    .attr('height', height)
 				.attr("viewBox", [0, 0, width, height]);
@@ -35,7 +35,7 @@ function createGraph(graph){
 				.scaleExtent([1/4, 8])
 				.on("zoom", zoomed));
 	
-	var rootNode = disorderGraph.nodes[0];
+	var rootNode = graph.nodes[0];
 	
 	var link = svg.selectAll(".link")
 					.data(graph.links)
@@ -183,10 +183,20 @@ function createGraph(graph){
 					   .force("link", d3.forceLink()
 						   				.id(function(d) {return d.id; })
 						   				.links(graph.links)
+						   				.distance(function(d){
+						   					if(d.target.typeOfNode === "disorder"){
+						   						return 10;
+						   					}else if(d.target.typeOfNode === "gene"){
+						   						return 20;
+						   					}else{
+						   						return 30;
+						   					}
+						   				})
 						   	 )
-					   .force("charge", d3.forceManyBody().strength(-300))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
+					   .force("charge", d3.forceManyBody().strength(-100))         // This adds repulsion between nodes. Play with the -400 for the repulsion strength
 	      			   .force("center", d3.forceCenter(width / 2, height / 2))     // This force attracts nodes to the center of the svg area
 	      			   .on("tick", ticked);
+	      			   
 	function zoomed({transform}) {
 		link.attr("transform", transform);
 		node.attr("transform", transform);

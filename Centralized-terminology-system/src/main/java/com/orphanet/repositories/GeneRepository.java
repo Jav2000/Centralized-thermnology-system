@@ -1,7 +1,5 @@
 package com.orphanet.repositories;
 
-import java.util.List;
-
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
@@ -13,9 +11,6 @@ public interface GeneRepository extends Neo4jRepository<Gene, Long>{
 	
 	@Query("MATCH (g:Gene {symbol: $symbol}) RETURN g")
 	public Gene findGeneBySymbol(String symbol);
-	
-	@Query("MATCH path = (g:Gene)<-[:ASSOCIATED_WITH_GENE]-(d:Disorder {orphaCode: $orphaCode}) RETURN g, collect(relationships(path)), collect(d)")
-	public List<Gene> findGenesAssociatedToDisorder(Integer orphaCode);
 	
 	@Query("MATCH path = (g:Gene {symbol: $symbol})<-[:ASSOCIATED_WITH_GENE]-(d:Disorder) "
 			+ "RETURN g, collect(relationships(path)), collect(d)")
