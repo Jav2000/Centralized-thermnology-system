@@ -1,5 +1,6 @@
 package com.orphanet.services;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class DisorderService {
 		return result;
 	}
 	
-	public Disorder findSearchInformationByOrphaCode(Integer orphaCode) {
+	public Disorder findSearchInformationByOrphaCode(Integer orphaCode) throws IOException {
 		Disorder disorder = disorderRepository.findDisorderGenesAndPhenotypesByOrphaCode(orphaCode);
 		Disorder classification = disorderRepository.findDisorderPreferentialClassification(orphaCode);
 		Disorder disorderHierarchy = disorderRepository.findDisorderAscendantsAndDescendants(orphaCode);
@@ -44,10 +45,11 @@ public class DisorderService {
 		if(classification != null) {
 			disorder.setPreferentialClassification(classification.getName());
 		}
+		
 		return disorder;
 	}
 	
-	public Disorder findSearchInformationByNameOrSynonym(String nameOrSynonym) {
+	public Disorder findSearchInformationByNameOrSynonym(String nameOrSynonym) throws IOException {
 		Disorder disorder = disorderRepository.findDisorderGenesAndPhenotypesByNameOrSynonym(nameOrSynonym);
 		Disorder classification = disorderRepository.findDisorderPreferentialClassification(disorder.getOrphaCode());
 		Disorder disorderHierarchy = disorderRepository.findDisorderAscendantsAndDescendants(disorder.getOrphaCode());
@@ -60,7 +62,7 @@ public class DisorderService {
 		return disorder;
 	}
 	
-	public Map<String, List<Map<String, Object>>> findDisorderGraph(Integer orphaCode){
+	public Map<String, List<Map<String, Object>>> findDisorderGraph(Integer orphaCode) throws IOException{
 		List<Map<String, Object>> nodes = new ArrayList<>();
 		List<Map<String, Object>> links = new ArrayList<>();
 		
