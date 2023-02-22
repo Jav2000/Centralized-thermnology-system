@@ -29,7 +29,7 @@ public class GeneService {
 		return geneRepository.findDisordersAssociatedToGene(symbol);
 	}
 	
-	public Map<String, List<Map<String, Object>>> getGeneGraph(String symbol){
+	public Map<String, List<Map<String, Object>>> findGeneGraph(String symbol){
 		Gene gene = geneRepository.findDisordersAssociatedToGene(symbol);
 		
 		List<Map<String, Object>> nodes = new ArrayList<>();

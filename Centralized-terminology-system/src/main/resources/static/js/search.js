@@ -21,27 +21,53 @@ document.getElementById("showDisorderGraph").onclick = function(){
   	}
 };
 		
-var genesGraphOn = false;
-var genesGraph = null;
+var geneGraphOn = false;
+var geneGraph = null;
 		
 for(var i = 0; i < genes.length; i++){
 	document.getElementById(genes[i].gene.symbol).onclick = function(){
-		if(genesGraph === null){
+		if(geneGraph === null){
 			$.ajax({
 				type: "GET",
 				url: "/geneGraph",
-				data: {"symbol": genes[i - 1].gene.symbol},
+				data: {"symbol": this.id},
 				success: function(result){
-					genesGraph = result;
-					createGraph(genesGraph);
+					geneGraph = result;
+					createGraph(geneGraph);
 					document.getElementById("fullGraph").style.display = "block";
-					genesGraphOn = true;
+					geneGraphOn = true;
 				}
 			});
 		}else{
-			createGraph(genesGraph);
+			createGraph(geneGraph);
 			document.getElementById("fullGraph").style.display = "block";
-			genesGraphOn = true;
+			geneGraphOn = true;
+		}
+	}
+}
+
+var phenotypeGraphOn = false;
+var phenotypeGraph = null;
+var phenotypesGraphLoad = new Map();
+
+for(var i = 0; i < phenotypes.length; i++){
+	document.getElementById(phenotypes[i].phenotype.hpoid).onclick = function(){
+		if(phenotypesGraphLoad.get(this.id) === undefined){
+			$.ajax({
+				type: "GET",
+				url: "/phenotypeGraph",
+				data: {"HPOId": this.id},
+				success: function(result){
+					phenotypesGraphLoad.set(result.nodes[0].HPOId, result);
+					createGraph(result);
+					document.getElementById("fullGraph").style.display = "block";
+					phenotypeGraphOn = true;
+				}
+			});
+		}else{
+			createGraph(phenotypesGraphLoad.get(this.id));
+			document.getElementById("fullGraph").style.display = "block";
+			phenotypeGraphOn = true;
 		}
 	}
 }
@@ -50,7 +76,8 @@ document.getElementById("closeGraph").onclick = function(){
 	d3.select("#graphSVG").selectAll("*").remove();
 	document.getElementById("fullGraph").style.display = "none";
 	disorderGraphOn = false;
-	var genesGraphOn = false;
+	genesGraphOn = false;
+	phenotypeGraphOn = false;
 }
 
 autocomplete(document.getElementById("myInput"), names);

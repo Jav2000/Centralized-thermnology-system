@@ -1,5 +1,7 @@
 package com.orphanet.controllers;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,12 +19,11 @@ public class SearchController {
 	@GetMapping("/search")
 	public String getSearch(Model model) {
 		model.addAttribute("entityNames", disorderService.findAllDisorderNamesAndSynonyms());
-		
 		return "search.html";
 	}
 
 	@GetMapping("/search/name")
-	public String getEntity(@RequestParam(value =  "input") String input, Model model) {
+	public String getEntity(@RequestParam(value =  "input") String input, Model model) throws IOException {
 		model.addAttribute("entityNames", disorderService.findAllDisorderNamesAndSynonyms());
 		model.addAttribute("disorder", disorderService.findSearchInformationByNameOrSynonym(input));
 		return "search.html";

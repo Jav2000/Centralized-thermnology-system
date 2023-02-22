@@ -1,5 +1,6 @@
 package com.orphanet.controllers;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public class DisorderController {
 	private DisorderService disorderService;
 	
 	@GetMapping("/disorderGraph")
-	public @ResponseBody Map<String, List<Map<String, Object>>> findDisorderGraph(Integer orphaCode){
-		return disorderService.getDisorderGraph(orphaCode);
+	public @ResponseBody Map<String, List<Map<String, Object>>> getDisorderGraph(Integer orphaCode) throws IOException{
+		return disorderService.findDisorderGraph(orphaCode);
 	}
 }

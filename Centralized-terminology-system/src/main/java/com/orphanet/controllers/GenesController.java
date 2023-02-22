@@ -24,7 +24,7 @@ public class GenesController {
 	}
 	
 	@GetMapping("/geneGraph")
-	public @ResponseBody Map<String, List<Map<String, Object>>> findGeneGraph(String symbol){
-		return geneService.getGeneGraph(symbol);
+	public @ResponseBody Map<String, List<Map<String, Object>>> getGeneGraph(String symbol){
+		return geneService.findGeneGraph(symbol);
 	}
 }
