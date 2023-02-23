@@ -15,7 +15,11 @@ public class HomeController {
 	
 	@GetMapping(value = {"/home", "/"})
 	public String getHome(Model model) {
-		model.addAttribute("entityNames", disorderService.findAllDisorderNamesAndSynonyms());
+		try {
+			model.addAttribute("entityNames", disorderService.findAllDisorderNamesAndSynonyms());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		return "home.html";
 	}

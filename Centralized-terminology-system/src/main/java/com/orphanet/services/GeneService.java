@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.neo4j.driver.exceptions.ServiceUnavailableException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.stereotype.Service;
 
 import com.orphanet.neo4j.data.nodes.Gene;
@@ -18,38 +20,54 @@ public class GeneService {
 	private GeneRepository geneRepository;
 	
 	public List<Gene> findAll(){
-		return geneRepository.findAll();
+		try {
+			return geneRepository.findAll();
+		}catch (TransientDataAccessResourceException e) {
+			throw new ServiceUnavailableException("Conexion con base de datos rechazada");
+		}
 	}
 	
 	public Gene findGeneBySymbol(String symbol) {
-		return geneRepository.findGeneBySymbol(symbol);
+		try {
+			return geneRepository.findGeneBySymbol(symbol);
+		}catch (TransientDataAccessResourceException e) {
+			throw new ServiceUnavailableException("Conexion con base de datos rechazada");
+		}
 	}	
 	
 	public Gene findDisordersAssociatedToGene(String symbol) {
-		return geneRepository.findDisordersAssociatedToGene(symbol);
+		try {
+			return geneRepository.findDisordersAssociatedToGene(symbol);
+		}catch (TransientDataAccessResourceException e) {
+			throw new ServiceUnavailableException("Conexion con base de datos rechazada");
+		}
 	}
 	
 	public Map<String, List<Map<String, Object>>> findGeneGraph(String symbol){
-		Gene gene = geneRepository.findDisordersAssociatedToGene(symbol);
-		
-		List<Map<String, Object>> nodes = new ArrayList<>();
-		List<Map<String, Object>> links = new ArrayList<>();
-		
-		nodes.add(Map.of(	"id", 0, "typeOfNode", "gene",
-							"name", gene.getName(), "type", gene.getType(),
-							"locus", gene.getLocus()));
-		
-		int currentIndex = 1;
-		
-		for(int i = 0; i < gene.getDisorders().size(); i++) {
-			GeneDisorderRelation disorderRel = gene.getDisorders().get(i);
-			nodes.add(Map.of(	"id", currentIndex, "typeOfNode", "disorder", 
-								"name", disorderRel.getDisorder().getName(), "orphaCode", disorderRel.getDisorder().getOrphaCode(),
-								"group", disorderRel.getDisorder().getGroup(), "type", disorderRel.getDisorder().getType(),
-								"OMIM", disorderRel.getDisorder().getOMIM()));
-			links.add(Map.of("source", 0, "target", currentIndex, "status", disorderRel.getStatus(), "type", disorderRel.getType()));
-			currentIndex++;
+		try {
+			Gene gene = geneRepository.findDisordersAssociatedToGene(symbol);
+			
+			List<Map<String, Object>> nodes = new ArrayList<>();
+			List<Map<String, Object>> links = new ArrayList<>();
+			
+			nodes.add(Map.of(	"id", 0, "typeOfNode", "gene",
+								"name", gene.getName(), "type", gene.getType(),
+								"locus", gene.getLocus()));
+			
+			int currentIndex = 1;
+			
+			for(int i = 0; i < gene.getDisorders().size(); i++) {
+				GeneDisorderRelation disorderRel = gene.getDisorders().get(i);
+				nodes.add(Map.of(	"id", currentIndex, "typeOfNode", "disorder", 
+									"name", disorderRel.getDisorder().getName(), "orphaCode", disorderRel.getDisorder().getOrphaCode(),
+									"group", disorderRel.getDisorder().getGroup(), "type", disorderRel.getDisorder().getType(),
+									"OMIM", disorderRel.getDisorder().getOMIM()));
+				links.add(Map.of("source", 0, "target", currentIndex, "status", disorderRel.getStatus(), "type", disorderRel.getType()));
+				currentIndex++;
+			}
+			return Map.of("nodes", nodes, "links", links);
+		}catch (TransientDataAccessResourceException e) {
+			throw new ServiceUnavailableException("Conexion con base de datos rechazada");
 		}
-		return Map.of("nodes", nodes, "links", links);
 	}
 }
