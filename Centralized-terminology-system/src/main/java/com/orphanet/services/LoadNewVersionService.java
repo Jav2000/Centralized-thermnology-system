@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.neo4j.driver.exceptions.ServiceUnavailableException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +24,9 @@ public class LoadNewVersionService {
 	
 	@Scheduled(cron = "@monthly")
 	public void loadNewVersion(){
-		System.out.println("Iniciando comprobación de nuevas versiones de Orphanet");
-		Process process;
 		try {
+			System.out.println("Iniciando comprobación de nuevas versiones de Orphanet");
+			Process process;
 			process = Runtime.getRuntime().exec("Rscript src/main/resources/static/rScripts/ParseOrphanet.R");
 			BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			String s = null;
@@ -52,6 +54,8 @@ public class LoadNewVersionService {
 			}
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
+		} catch (TransientDataAccessResourceException e) {
+			throw new ServiceUnavailableException("Conexion con base de datos rechazada");
 		}
 	}
 }
