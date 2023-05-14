@@ -16,6 +16,7 @@
 			<div class="w3-bar w3-theme w3-top w3-left-align w3-large">
 				<a href="/home" class="w3-bar-item w3-button w3-hide-small w3-hover-white"><img src="/images/Data12.jpeg" style="width: 24px;"/></a>
 		    	<a href="/search" class="w3-bar-item w3-button w3-theme-l1">Search</a>
+		    	<a href="/versions" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Versions</a>
 		  	</div>
 		</div>	
 		<div class="search-panel">
@@ -31,7 +32,9 @@
 	<script th:inline="javascript" type="text/javascript">
   		var names = [[${entityNames}]];
   		var disorder = [[${disorder}]];
+  		console.log(disorder);
   		var genes = [[${disorder.genes}]];
+  		console.log(genes);
   		var phenotypes = [[${disorder.phenotypes}]];
 	</script>
 	<script th:inline="javascript" type="text/javascript" th:src="@{/js/autocompleteSearchTab.js}"></script>
