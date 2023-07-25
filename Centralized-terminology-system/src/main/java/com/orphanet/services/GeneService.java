@@ -1,5 +1,6 @@
 package com.orphanet.services;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,33 +20,40 @@ public class GeneService {
 	@Autowired
 	private GeneRepository geneRepository;
 	
-	public List<Gene> findAll(){
+	public List<String> findAllGeneNames() throws IOException {
 		try {
-			return geneRepository.findAll();
+			List<Gene> genes;
+			List<String> result = new ArrayList<>();
+			genes = geneRepository.findAllGenes();
+			for(int i = 0; i < genes.size(); i++) {
+				Gene gene = genes.get(i);
+				result.add(gene.getName());
+			}
+			return result;
 		}catch (TransientDataAccessResourceException e) {
 			throw new ServiceUnavailableException("Conexion con base de datos rechazada");
 		}
 	}
 	
-	public Gene findGeneBySymbol(String symbol) {
+	public Gene findGeneSearchInformationByName(String name) throws IOException {
 		try {
-			return geneRepository.findGeneBySymbol(symbol);
-		}catch (TransientDataAccessResourceException e) {
-			throw new ServiceUnavailableException("Conexion con base de datos rechazada");
-		}
-	}	
-	
-	public Gene findDisordersAssociatedToGene(String symbol) {
-		try {
-			return geneRepository.findDisordersAssociatedToGene(symbol);
+			return geneRepository.findDisordersAssociatedToGeneByName(name);
 		}catch (TransientDataAccessResourceException e) {
 			throw new ServiceUnavailableException("Conexion con base de datos rechazada");
 		}
 	}
 	
-	public Map<String, List<Map<String, Object>>> findGeneGraph(String symbol){
+	public Gene findGeneSearchInformationBySymbol(String symbol) throws IOException {
 		try {
-			Gene gene = geneRepository.findDisordersAssociatedToGene(symbol);
+			return geneRepository.findDisordersAssociatedToGeneBySymbol(symbol);
+		}catch (TransientDataAccessResourceException e) {
+			throw new ServiceUnavailableException("Conexion con base de datos rechazada");
+		}
+	}
+	
+	public Map<String, List<Map<String, Object>>> findGeneGraphBySymbol(String symbol){
+		try {
+			Gene gene = geneRepository.findDisordersAssociatedToGeneBySymbol(symbol);
 			
 			List<Map<String, Object>> nodes = new ArrayList<>();
 			List<Map<String, Object>> links = new ArrayList<>();

@@ -1,16 +1,17 @@
 library(xml2)
 library(dplyr)
 library(purrr)
+library(stringi)
 
 # Main
-load("src/main/resources/static/rScripts/Versiones/LastVersion.RData")
+load("src/main/resources/static/rScripts/LastVersionOrphanet.RData")
 check_new_versions()
 
 check_new_versions <- function(){
   if(as.Date(actual_date) < as.Date(xml_attr(read_xml("https://www.orphadata.com/data/xml/en_product1.xml"), "date"))){
     actual_date <<- as.character(as.Date(xml_attr(read_xml("https://www.orphadata.com/data/xml/en_product1.xml"), "date")))
-    parse_orphanet()
     print(paste0("Version nueva disponible en la carpeta ", actual_date))
+    parse_orphanet()
     return(1)
   }
   print("No hay versiones nuevas disponibles")
@@ -27,9 +28,8 @@ parse_orphanet <- function(){
   actual_preferential_parent_relations <<- parse_preferential_parent_relations()
   actual_genes <<- parse_genes()
   actual_associated_with_gene_relations <<- parse_genes_relations()
-  actual_phenotypes <<- parse_phenotypes()
   actual_associated_with_phenotype_relations <<- parse_phenotypes_relations()
-  save.image("src/main/resources/static/rScripts/Versiones/LastVersion.RData")
+  save.image("src/main/resources/static/rScripts/LastVersionOrphanet.RData")
   
   database_import_folder <- "/Users/javierrodriguezsanchez/Library/Application Support/Neo4j Desktop/Application/relate-data/dbmss/dbms-77bfd498-475f-4b44-852e-c3f26f82a067/import/"
   write.table(actual_disorders, paste0(database_import_folder, "Orphanet_disorders.csv"), row.names = F, sep = "|", na = "")
@@ -43,6 +43,8 @@ parse_orphanet <- function(){
   write.table(actual_phenotypes, paste0(database_import_folder, "Orphanet_phenotype.csv"), row.names = F, sep = "|", na = "")
   write.table(actual_associated_with_phenotype_relations, paste0(database_import_folder, "Orphanet_associated_with_phenotype_relations.csv"), row.names = F, sep = "|", na = "")
 }
+
+############# Parse Orphanet ##############
 
 parse_disorders <- function(){
   print("Parse entities")
@@ -61,7 +63,8 @@ parse_disorders <- function(){
                        Group = character(),
                        Type = character(),
                        Description = character(),
-                       OMIM = numeric())
+                       OMIM = numeric(),
+                       ICD11 = character())
   for(i in 1:number_of_disorders){
     disorder <- xml_child(disorders_list, i)
     flag_list <- xml_integer(xml_find_all(disorder, "DisorderFlagList/DisorderFlag/Value"))
@@ -70,10 +73,14 @@ parse_disorders <- function(){
     external_references <- xml_child(disorder, "ExternalReferenceList")
     if(xml_attr(external_references, "count") != 0){
       omim <- NA
+      icd <- NA
       for(j in 1:xml_attr(external_references, "count")){
         external_reference <- xml_child(external_references, j)
         if(xml_text(xml_child(external_reference, "Source")) == "OMIM"){
           omim <- xml_integer(xml_child(external_reference, "Reference"))
+        }
+        if(xml_text(xml_child(external_reference, "Source")) == "ICD-11"){
+          icd <- xml_text(xml_child(external_reference, "Reference"))
         }
       }
     }
@@ -89,14 +96,15 @@ parse_disorders <- function(){
                      Group = xml_text(xml_child(disorder, "DisorderGroup/Name")),
                      Type = xml_text(xml_child(disorder, "DisorderType/Name")),
                      description = desc,
-                     OMIM = omim)
+                     OMIM = omim,
+                     ICD11 = icd)
     disorders <- rbind(disorders, tibble)
     # }
     progress <- progress + 1
     setTxtProgressBar(pb, progress)
   }
   close(pb)
-  write.table(disorders, paste0("src/main/resources/static/rScripts/Versiones/", actual_date, "Orphanet_active_entities.csv"), row.names = F, sep = "|", na = "")
+  #write.table(disorders, paste0("src/main/resources/static/rScripts/Versiones/", actual_date, "Orphanet_active_entities.csv"), row.names = F, sep = "|", na = "")
   return(disorders)
 }
 
@@ -369,17 +377,6 @@ parse_genes_relations <- function(){
   return(genes_disorders_association)
 }
 
-parse_phenotypes <- function(){
-  print("Parse phenotypes")
-  xml <- read_xml("https://www.orphadata.com/data/xml/en_product4.xml")
-  hpo_disorder_status_list <- xml_child(xml, "HPODisorderSetStatusList")
-  hpos_id <- xml_text(xml_find_all(hpo_disorder_status_list, "HPODisorderSetStatus/Disorder/HPODisorderAssociationList/HPODisorderAssociation/HPO/HPOId"))
-  hpos_term <- xml_text(xml_find_all(hpo_disorder_status_list, "HPODisorderSetStatus/Disorder/HPODisorderAssociationList/HPODisorderAssociation/HPO/HPOTerm"))
-  hpos <- tibble(HPOId = hpos_id, HPOTerm = hpos_term) |> unique()
-  write.table(hpos, paste0("./Versiones/", actual_date, "Orphanet_phenotypes.csv"), row.names = F, sep = "|", na = "")
-  return(hpos)
-}
-
 parse_phenotypes_relations <- function(){
   print("Parse associated with phenotype relations")
   xml <- read_xml("https://www.orphadata.com/data/xml/en_product4.xml")
@@ -403,7 +400,7 @@ parse_phenotypes_relations <- function(){
     if(number_of_hpos > 0){
       for(j in 1:number_of_hpos){
         hpo_disorder_association <- xml_child(hpos, j)
-        hpoId <- xml_text(xml_child(hpo_disorder_association, "HPO/HPOId"))
+        hpoId <- stri_extract(xml_text(xml_child(hpo_disorder_association, "HPO/HPOId")), regex = "[:digit:]+")
         hpoFrecuency <- xml_text(xml_child(hpo_disorder_association, "HPOFrequency/Name"))
         hpoCriteria <- xml_text(xml_child(hpo_disorder_association, "DiagnosticCriteria/Name"))
         hpo_disorder_association_list <- rbind(hpo_disorder_association_list, tibble(OrphaCode = orphaCode,
@@ -417,7 +414,6 @@ parse_phenotypes_relations <- function(){
   }
   close(pb)
   hpo_disorder_association_list <- hpo_disorder_association_list |> unique()
-  write.table(hpo_disorder_association_list, paste0("src/main/resources/static/rScripts/Versiones/", actual_date, "Orphanet_associated_with_phenotype_relations.csv"), row.names = F, sep = "|", na = "")
+  #write.table(hpo_disorder_association_list, paste0("src/main/resources/static/rScripts/Versiones/", actual_date, "Orphanet_associated_with_phenotype_relations.csv"), row.names = F, sep = "|", na = "")
   return(hpo_disorder_association_list)
 }
-

@@ -5,7 +5,7 @@ document.getElementById("showDisorderGraph").onclick = function(){
 	if(disorderGraph === null){
 		$.ajax({
 			type: "GET",
-		  	url: "/disorderGraph",
+		  	url: "/searchDisorder/graph",
 		  	data: {"orphaCode": disorder.orphaCode},
 		  	success: function(result){
 		  		disorderGraph = result;
