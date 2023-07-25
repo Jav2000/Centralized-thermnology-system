@@ -35,6 +35,8 @@ public class Disorder {
 	
 	private Integer OMIM;
 	
+	private String ICD11;
+	
 	private String averageAgeOfOnset;
 	
 	private String averageAgeOfDeath;
@@ -42,6 +44,10 @@ public class Disorder {
 	private String inheritanceTypes;
 	
 	private String preferentialClassification;
+	
+	private String ICD_URI;
+	
+	private String ICD_JSON;
 	
 	@JsonBackReference
 	@Relationship(type = "PARENT_RELATION", direction = Direction.INCOMING)
@@ -60,8 +66,8 @@ public class Disorder {
 	private List<DisorderPhenotypeRelation> phenotypes;
 	
 	public Disorder(Integer orphaCode, String name, String group, String type, String description,
-					List<String> synonyms, Integer OMIM, String averageAgeOfOnset, String averageAgeOfDeath,
-					String inheritanceTypes) {
+					List<String> synonyms, Integer OMIM, String ICD11, String averageAgeOfOnset, String averageAgeOfDeath,
+					String inheritanceTypes, String ICD_URI) {
 		this.orphaCode = orphaCode;
 		this.name = name;
 		this.group = group;
@@ -69,9 +75,11 @@ public class Disorder {
 		this.description = description;
 		this.synonyms = synonyms;
 		this.OMIM = OMIM;
+		this.setICD11(ICD11);
 		this.averageAgeOfOnset = averageAgeOfOnset;
 		this.averageAgeOfDeath = averageAgeOfDeath;
 		this.inheritanceTypes = inheritanceTypes;
+		this.setICD_URI(ICD_URI);
 	}
 
 	public Integer getOrphaCode() {
@@ -130,6 +138,14 @@ public class Disorder {
 		this.OMIM = OMIM;
 	}
 
+	public String getICD11() {
+		return ICD11;
+	}
+
+	public void setICD11(String iCD11) {
+		ICD11 = iCD11;
+	}
+
 	public String getAverageAgeOfOnset() {
 		return averageAgeOfOnset;
 	}
@@ -152,6 +168,22 @@ public class Disorder {
 
 	public void setInheritanceTypes(String inheritanceTypes) {
 		this.inheritanceTypes = inheritanceTypes;
+	}
+	
+	public String getICD_URI() {
+		return ICD_URI;
+	}
+
+	public void setICD_URI(String iCD_URI) {
+		ICD_URI = iCD_URI;
+	}
+
+	public String getICD_JSON() {
+		return ICD_JSON;
+	}
+
+	public void setICD_JSON(String iCD_JSON) {
+		ICD_JSON = iCD_JSON;
 	}
 
 	public String getPreferentialClassification() {

@@ -4,7 +4,7 @@ html:first-letter{
 .entity{
 	position: relative;
 	top: 42px;
-	left: 10px;
+	left: 30px;
 	display: flex;
 }
 		
@@ -114,10 +114,10 @@ html:first-letter{
 .buscador{
 	width: 600px;
 }
-		
+
 .autocomplete-items {
 	height: auto;
-	max-height: 500px;
+	max-height: 400px;
 	width: 600px;
 	overflow-y: scroll;
 	position: absolute;
@@ -126,6 +126,7 @@ html:first-letter{
 	z-index: 99;
 	left: 0;
 	right: 0;
+	top: 27px;
 }
 
 .autocomplete-items div {
@@ -136,6 +137,31 @@ html:first-letter{
 }
 
 .autocomplete-items div:hover {
+  	background-color: #e9e9e9; 
+}
+		
+.autocomplete-items-home {
+	height: auto;
+	max-height: 400px;
+	width: 600px;
+	overflow-y: scroll;
+	position: absolute;
+	border: 1px solid #d4d4d4;
+	border-top: none;
+	z-index: 99;
+	left: 0;
+	right: 0;
+	top: 140px;
+}
+
+.autocomplete-items-home div {
+  	padding: 10px;
+  	cursor: pointer;
+  	background-color: #fff; 
+  	border-bottom: 1px solid #d4d4d4; 
+}
+
+.autocomplete-items-home div:hover {
   	background-color: #e9e9e9; 
 }
 
@@ -188,7 +214,7 @@ html:first-letter{
 
 .graph-backgroud {
 	background: #0000004a;
-    height: 100%;
+    height: 130%;
     width: 100%;
 }
 
@@ -257,3 +283,11 @@ html:first-letter{
 	fill: none;
     stroke-width: 1px;
 }
+
+.home-search-panel {
+	width: 700px;
+    height: 100px;
+    margin: auto;
+    margin-top: 300px;
+}
+

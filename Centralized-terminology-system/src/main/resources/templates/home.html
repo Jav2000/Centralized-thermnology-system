@@ -9,26 +9,17 @@
 		<title>Home</title>
 	</head>
 	<body>
-		<div class="w3-top" style="position: relative;">
-			<div class="w3-bar w3-theme w3-top w3-left-align w3-large" style="position: relative;">
+		<div class="w3-top">
+			<div class="w3-bar w3-theme w3-top w3-left-align w3-large">
 				<a href="/home" class="w3-bar-item w3-button w3-theme-l1"><img src="/images/Data12.jpeg" style="width: 24px;"/></a>
-		    	<a href="/search" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Search</a>
+		    	<a href="/searchDisorder" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Search Disorders</a>
+		    	<a href="/searchGene" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Search Genes</a>
+		    	<a href="/searchPhenotype" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Search Phenotypes</a>
 		    	<a href="/versions" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Versions</a>
 		  	</div>
 		</div>
-		<div class="home-search-panel">
+		<div class="home-panel">
 			<div style="width: 300px; margin: auto;"><img src="/images/Data12.jpeg" style="width: 300px;"/></div>
-			<form th:action="@{/search/name}" autocomplete="off">
-				<div class="home-search-panel-inputs">
-					<input id="myInput" class="buscador" type="text" placeholder="..." th:name="input"/>
-					<input type="submit" class="submit"/>
-				</div>
-			</form>
 		</div>
 	</body>
-	<script th:inline="javascript" type="text/javascript">
-		/* Nombres para sugerencias buscador */
-  		var names = [[${entityNames}]];
-	</script>
-	<script th:inline="javascript" type="text/javascript" th:src="@{/js/autocompleteSearchTab.js}"></script>
 </html>

@@ -8,13 +8,16 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 		<script src="https://d3js.org/d3.v6.min.js"></script>
 		<link rel="icon" type="image/png" href="/images/Data12.jpeg">
-		<title>Search</title>
+		<title th:if="${disorder == null}">Search</title>
+		<title th:if="${disorder != null}">[[${disorder.name}]]</title>
 	</head>
 	<body>
 		<div class="w3-top">
 			<div class="w3-bar w3-theme w3-top w3-left-align w3-large">
 				<a href="/home" class="w3-bar-item w3-button w3-hide-small w3-hover-white"><img src="/images/Data12.jpeg" style="width: 24px;"/></a>
-		    	<a href="/search" class="w3-bar-item w3-button w3-theme-l1">Search</a>
+		    	<a href="/search" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Search Disorders</a>
+		    	<a href="/search" class="w3-bar-item w3-button w3-theme-l1">Search Genes</a>
+		    	<a href="/search" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Search Phenotypes</a>
 		    	<a href="/versions" class="w3-bar-item w3-button w3-hide-small w3-hover-white">Versions</a>
 		  	</div>
 		</div>	
@@ -26,9 +29,17 @@
 				</div>
 			</form>
 		</div>
+		<div class="result-panel" th:replace="~{fragments/disorderFragment.html :: disorder}"></div>
 	</body>
 	<script th:inline="javascript" type="text/javascript">
   		var names = [[${entityNames}]];
+  		var disorder = [[${disorder}]];
+  		console.log(disorder);
+  		var genes = [[${disorder.genes}]];
+  		console.log(genes);
+  		var phenotypes = [[${disorder.phenotypes}]];
 	</script>
 	<script th:inline="javascript" type="text/javascript" th:src="@{/js/autocompleteSearchTab.js}"></script>
+	<script th:inline="javascript" type="text/javascript" th:src="@{/js/searchResult.js}"></script>
+	<script th:inline="javascript" type="text/javascript" th:src="@{/js/D3Graph.js}"></script>
 </html>

@@ -14,13 +14,22 @@ public interface DisorderRepository extends Neo4jRepository<Disorder, Long>{
 	@Query("MATCH (d:Disorder) RETURN d")
 	public List<Disorder> findAllDisorders();
 	
+	@Query("MATCH (d:Disorder) WHERE d.name = $nameOrSynonym OR $nameOrSynonym in d.synonyms RETURN d")
+	public Disorder findDisorderByNameOrSynonym(String nameOrSynonym);
+	
+	@Query("MATCH (d:Disorder {orphaCode: $orphaCode}) RETURN d")
+	public Disorder findOrphanetDisorderByOrphaCode(String orphaCode);
+	
+	@Query("MATCH (d:Disorder {ICD11: $ICDCode}) RETURN d")
+	public Disorder findICDDisorderByICDCode(String ICDCode);
+	
 	@Query("MATCH path = (p)<-[:ASSOCIATED_WITH_PHENOTYPE*0..1]-(d:Disorder {orphaCode: $orphaCode})-[:ASSOCIATED_WITH_GENE*0..1]->(g) "
 			+ "RETURN d, collect(relationships(path)), collect(g), collect(p)")
-	public Disorder findDisorderGenesAndPhenotypesByOrphaCode(Integer orphaCode);
+	public Disorder findOrphanetDisorderGenesAndPhenotypesByOrphaCode(Integer orphaCode);
 	
-	@Query("MATCH path = (p)<-[:ASSOCIATED_WITH_PHENOTYPE*0..1]-(d:Disorder)-[:ASSOCIATED_WITH_GENE*0..1]->(g) "
+	@Query("MATCH path = (p)<-[:ASSOCIATED_WITH_PHENOTYPE*0..1]-(d:Disorder)-[:ASSOCIATED_WITH_GENE*0..1]->(g)"
 			+ "WHERE d.name = $nameOrSynonym OR $nameOrSynonym in d.synonyms RETURN d, collect(relationships(path)), collect(g), collect(p)")
-	public Disorder findDisorderGenesAndPhenotypesByNameOrSynonym(String nameOrSynonym);
+	public Disorder findOrphanetDisorderGenesAndPhenotypesByNameOrSynonym(String nameOrSynonym);
 	
 	@Query("MATCH path = (:Disorder {orphaCode: $orphaCode})<-[:PARENT_RELATION*]-(d:Disorder)<-[:PARENT_RELATION]-(:Root) "
 			+ "RETURN d ORDER BY length(path) ASC LIMIT 1")

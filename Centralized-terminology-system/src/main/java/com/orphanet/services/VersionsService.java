@@ -3,6 +3,10 @@ package com.orphanet.services;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.neo4j.driver.exceptions.ServiceUnavailableException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +18,7 @@ import com.orphanet.repositories.DeleteOldVersionRepository;
 import com.orphanet.repositories.LoadNewVersionRepository;
 
 @Service
-public class LoadNewVersionService {
+public class VersionsService {
 
 	@Autowired
 	private DeleteOldVersionRepository deleteOldVersionRepository;
@@ -56,6 +60,16 @@ public class LoadNewVersionService {
 			e.printStackTrace();
 		} catch (TransientDataAccessResourceException e) {
 			throw new ServiceUnavailableException("Conexion con base de datos rechazada");
+		}
+	}
+	
+	public void getVersions() throws IOException{
+		Path dir = Paths.get("src/main/resources/static/rScripts/Versiones");
+
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
+		    for (@SuppressWarnings("unused") Path file : stream) {
+		        
+		    }
 		}
 	}
 }
